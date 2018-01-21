@@ -64,3 +64,33 @@
 (global-set-key (kbd "M-n") 'elpy-nav-forward-block)   ;;move bock down
 (global-set-key (kbd "M-p") 'elpy-nav-backward-block)  ;;move bock up
 (global-set-key (kbd "M-,") 'pop-tag-mark) ;; go to last place where M-. was used (go-to-definition)
+
+;; C++
+;; --------------------------
+
+;; rtags for references and shit
+(add-hook 'c-mode-hook 'rtags-start-process-unless-running)
+(add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
+
+(defun my-goto-symbol ()
+  (interactive)
+  (deactivate-mark)
+  (ring-insert find-tag-marker-ring (point-marker))
+  (or (and (require 'rtags nil t)
+	   (rtags-find-symbol-at-point))))
+
+(define-key global-map (kbd "M-.") 'my-goto-symbol)
+(define-key global-map (kbd "M-,") 'pop-tag-mark)
+
+;; yasnippet
+;; TODO implement here!
+
+;; irony for completion
+(add-hook 'c-mode-hook 'irony-mode)
+(add-hook 'c++-mode-hook 'irony-mode)
+(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+
+(add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
+(eval-after-load 'company
+  '(add-to-list
+    'company-backends '(company-irony-c-headers company-irony)))
