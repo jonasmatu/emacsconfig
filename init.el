@@ -1,8 +1,8 @@
 ;; init.el --- Emacs configuration
 
-;; this is a line going to be deleted
-;; this one stays
 
+;; this one stays
+;;this is a new line in experimental
 ;; INSTALL PACKAGES
 ;; --------------------------------------
 
