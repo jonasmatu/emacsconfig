@@ -1,11 +1,13 @@
 ;; init.el --- Emacs configuration
 
-;; this is a line going to be deleted
-;; this one stays
 
+<<<<<<< HEAD
 
 ;; a change in master
 
+=======
+
+>>>>>>> experimental
 ;; INSTALL PACKAGES
 ;; --------------------------------------
 
