@@ -1,6 +1,6 @@
 ;; init.el --- Emacs configuration
 
-;; a different change
+
 
 ;; INSTALL PACKAGES
 ;; --------------------------------------
