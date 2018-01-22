@@ -3,6 +3,9 @@
 ;; this is a line going to be deleted
 ;; this one stays
 
+
+;; a change in master
+
 ;; INSTALL PACKAGES
 ;; --------------------------------------
 
