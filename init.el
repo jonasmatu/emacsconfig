@@ -1,13 +1,5 @@
 ;; init.el --- Emacs configuration
 
-
-<<<<<<< HEAD
-
-;; a change in master
-
-=======
-
->>>>>>> experimental
 ;; INSTALL PACKAGES
 ;; --------------------------------------
 
