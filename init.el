@@ -1,5 +1,4 @@
-;; init.el --- Emacs configuration
-
+ ;; init.el --- Emacs configuration
 
 ;; INSTALL PACKAGES
 ;; --------------------------------------
@@ -128,3 +127,25 @@
 (eval-after-load 'company '(add-to-list 'company-backends '(company-irony-c-headers
 							    company-irony company-yasnippet
 							    company-clang))) 
+
+;; Latex
+;; ---------------------------
+
+(setq ispell-program-name "aspell")
+(setq ispell-dictionary "german")
+(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+(add-hook 'LaTeX-mode-hook 'flyspell-buffer)
+
+(load "auctex.el" nil t t)
+
+(setq TeX-auto-save t)
+(setq TeX-parse-self t)
+(setq TeX-save-query nil)
+
+(setq TeX-PDF-mode t)
+
+;; Make okular work
+(setq TeX-source-correlate-mode t
+      TeX-source-correlate-start-server t)
+(eval-after-load "tex"
+  '(setcar (cdr (assoc 'output-pdf TeX-view-program-selection)) "Okular"))
