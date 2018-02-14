@@ -99,7 +99,7 @@
 (require 'yasnippet)
 (yas-reload-all)
 (add-hook 'c++-mode-hook #'yas-minor-mode)
-
+(yas-global-mode 1)
 
 ;; irony for completion
 (require 'irony)
