@@ -1,4 +1,4 @@
- ;; init.el --- Emacs configuration
+;; init.el --- Emacs configuration
 
 ;; INSTALL PACKAGES
 ;; --------------------------------------
@@ -34,7 +34,7 @@
 (tool-bar-mode -1) ;;disable toolbar
 (menu-bar-mode -1) ;;disable menu bar
 
-;; )) for smart parenthesis 
+;; for smart parenthesis 
 (require 'smartparens-config)
 (show-smartparens-global-mode +1)
 (smartparens-global-mode 1)
@@ -42,12 +42,11 @@
 
 (ivy-mode 1)
 
-;; autocomplete mit company
-(add-hook 'after-init-hook 'global-company-mode)
-(setq company-dabbrev-downcase 0)
-(setq company-idle-delay 0)
-(setq company-require-match nil)
-
+;; ;; autocomplete mit company
+;; (add-hook 'after-init-hook 'global-company-mode)
+;; (setq company-dabbrev-downcase 0)
+;; (setq company-idle-delay 0)
+;; (setq company-require-match nil)	
 
 ;; Python
 ;; ----------------------------------
@@ -107,7 +106,7 @@
 (require 'yasnippet)
 (yas-reload-all)
 (add-hook 'c++-mode-hook #'yas-minor-mode)
-
+(yas-global-mode 1)
 
 ;; irony for completion
 (require 'irony)
@@ -149,3 +148,26 @@
       TeX-source-correlate-start-server t)
 (eval-after-load "tex"
   '(setcar (cdr (assoc 'output-pdf TeX-view-program-selection)) "Okular"))
+
+
+(defadvice auto-complete-mode (around disable-auto-complete-for-python)
+  (unless (eq major-mode 'python-mode) ad-do-it))
+
+(ad-activate 'auto-complete-mode)
+(require 'auto-complete)
+(add-to-list 'ac-modes 'latex-mode) ; beware of using 'LaTeX-mode instead
+(require 'ac-math) ; package should be installed first 
+(defun my-ac-latex-mode () ; add ac-sources for latex
+  (setq ac-sources
+        (append '(ac-source-math-unicode
+          ac-source-math-latex
+          ac-source-latex-commands)
+                ac-sources)))
+(add-hook 'LaTeX-mode-hook 'my-ac-latex-mode)
+(setq ac-math-unicode-in-math-p t)
+(ac-flyspell-workaround) ; fixes a known bug of delay due to flyspell (if it is there)
+
+(require 'auto-complete-config) ; should be after add-to-list 'ac-modes and hooks
+(ac-config-default)
+(setq ac-auto-show-menu t)
+;; (global-auto-complete-mode t) 
