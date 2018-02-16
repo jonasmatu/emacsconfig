@@ -130,10 +130,10 @@
 ;; Latex
 ;; ---------------------------
 
-(setq ispell-program-name "aspell")
-(setq ispell-dictionary "german")
-(add-hook 'LaTeX-mode-hook 'flyspell-mode)
-(add-hook 'LaTeX-mode-hook 'flyspell-buffer)
+;;(setq ispell-program-name "aspell")
+;;(setq ispell-dictionary "german")
+;;(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+;;(add-hook 'LaTeX-mode-hook 'flyspell-buffer)
 
 (load "auctex.el" nil t t)
 
