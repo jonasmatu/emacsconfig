@@ -56,6 +56,7 @@
 (elpy-enable)
 (setq elpy-rpc-python-command "python3") ;;use python3
 (setq python-shell-interpreter "python3");;use python3
+(setq elpy-rpc-backend "jedi")
 (when (require 'flycheck nil t)
   (setq elpy-modules(delq 'elpy-module-flymake elpy-modules))
   (add-hook 'elpy-mode-hook 'flycheck-mode))
@@ -79,6 +80,7 @@
       c-basic-offset 4
 	  tab-width 4
 	  indent-tabs-mode t)
+(modern-c++-font-lock-global-mode t)
 ;; flycheck
 (require 'flycheck)
 (add-hook 'c++-mode-hook
@@ -95,8 +97,13 @@
   (or (and (require 'rtags nil t)
 	   (rtags-find-symbol-at-point))))
 
+(rtags-enable-standard-keybindings)
+
+(define-key global-map (kbd "C-c f") 'rtags-find-file)
+
 (define-key global-map (kbd "M-.") 'my-goto-symbol)
 (define-key global-map (kbd "M-,") 'pop-tag-mark)
+
 
 ;; cmake-ide
 (require 'cmake-ide)
@@ -132,10 +139,10 @@
 ;; Latex
 ;; ---------------------------
 
-(setq ispell-program-name "aspell")
-(setq ispell-dictionary "german")
-(add-hook 'LaTeX-mode-hook 'flyspell-mode)
-(add-hook 'LaTeX-mode-hook 'flyspell-buffer)
+;;(setq ispell-program-name "aspell")
+;;(setq ispell-dictionary "german")
+;;(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+;;(add-hook 'LaTeX-mode-hook 'flyspell-buffer)
 
 (load "auctex.el" nil t t)
 
