@@ -80,7 +80,7 @@
       c-basic-offset 4
 	  tab-width 4
 	  indent-tabs-mode t)
-(modern-c++-font-lock-global-mode t)
+;;(modern-c++-font-lock-global-mode t)
 ;; flycheck
 (require 'flycheck)
 (add-hook 'c++-mode-hook
