@@ -44,11 +44,12 @@
 
 (ivy-mode 1)
 
-;; ;; autocomplete mit company
-;; (add-hook 'after-init-hook 'global-company-mode)
-;; (setq company-dabbrev-downcase 0)
-;; (setq company-idle-delay 0)
-;; (setq company-require-match nil)	
+;; autocomplete mit company
+(add-hook 'after-init-hook 'global-company-mode)
+(setq company-dabbrev-downcase 0)
+(setq company-idle-delay 0)
+(setq company-require-match nil)
+
 
 ;; Python
 ;; ----------------------------------
@@ -75,14 +76,13 @@
 (global-set-key (kbd "C-c C-n l") 'ein:notebooklist-login)
 (global-set-key (kbd "C-c C-n o") 'ein:notebooklist-open)
 
-
 ;; C++
 ;; --------------------------
 (setq c-default-style "linux"
       c-basic-offset 4
 	  tab-width 4
 	  indent-tabs-mode t)
-(modern-c++-font-lock-global-mode t)
+;;(modern-c++-font-lock-global-mode t)
 ;; flycheck
 (require 'flycheck)
 (add-hook 'c++-mode-hook
@@ -161,25 +161,33 @@
   '(setcar (cdr (assoc 'output-pdf TeX-view-program-selection)) "Okular"))
 
 
-(defadvice auto-complete-mode (around disable-auto-complete-for-python)
-  (unless (eq major-mode 'python-mode) ad-do-it))
+(company-auctex-init)
+(setq company-math-disallow-unicode-symbols-in-faces nil)
+(append '((company-math-symbols-latex company-math-symbols-unicode
+				      company-auctex-macros company-auctex-environments))
+                      company-backends)
 
-(ad-activate 'auto-complete-mode)
-(require 'auto-complete)
-(add-to-list 'ac-modes 'latex-mode) ; beware of using 'LaTeX-mode instead
-(require 'ac-math) ; package should be installed first 
-(defun my-ac-latex-mode () ; add ac-sources for latex
-  (setq ac-sources
-        (append '(;;ac-source-math-unicode
-	  ac-source-math-latex
-          ac-source-latex-commands)
-                ac-sources)))
-(add-hook 'LaTeX-mode-hook 'my-ac-latex-mode)
-;;(setq ac-math-unicode-in-math-p t)
-(ac-flyspell-workaround) ; fixes a known bug of delay due to flyspell (if it is there)
 
-(require 'auto-complete-config) ; should be after add-to-list 'ac-modes and hooks
-(ac-config-default)
-(setq ac-auto-show-menu t)
-;; (global-auto-complete-mode t) 
-(define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
+;; auto-complete
+;;(defadvice auto-complete-mode (around disable-auto-complete-for-python)
+;;  (unless (eq major-mode 'python-mode) ad-do-it))
+
+;;(ad-activate 'auto-complete-mode)
+;;(require 'auto-complete)
+;;(add-to-list 'ac-modes 'latex-mode) ; beware of using 'LaTeX-mode instead
+;;(require 'ac-math) ; package should be installed first 
+;; (defun my-ac-latex-mode () ; add ac-sources for latex
+;;   (setq ac-sources
+;;         (append '(;;ac-source-math-unicode
+;; 	  ac-source-math-latex
+;;           ac-source-latex-commands)
+;;                 ac-sources)))
+;; (add-hook 'LaTeX-mode-hook 'my-ac-latex-mode)
+;; ;;(setq ac-math-unicode-in-math-p t)
+;; (ac-flyspell-workaround) ; fixes a known bug of delay due to flyspell (if it is there)
+
+;; (require 'auto-complete-config) ; should be after add-to-list 'ac-modes and hooks
+;; (ac-config-default)
+;; (setq ac-auto-show-menu t)
+;; ;; (global-auto-complete-mode t) 
+;; (define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
