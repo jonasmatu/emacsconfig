@@ -30,9 +30,11 @@
 (setq auto-save-default nil)
 (setq inhibit-startup-message t) ;; hide the startup message
 (load-theme 'material t) ;; load material theme
+;;(load-theme 'solarized-light t)
 (global-linum-mode t) ;; enable line numbers globally
 (tool-bar-mode -1) ;;disable toolbar
 (menu-bar-mode -1) ;;disable menu bar
+
 
 ;; for smart parenthesis 
 (require 'smartparens-config)
@@ -65,11 +67,14 @@
 (global-set-key (kbd "M-p") 'elpy-nav-backward-block)  ;;move bock up
 (global-set-key (kbd "M-,") 'pop-tag-mark) ;; go to last place where M-. was used (go-to-definition)
 
-;; Jupyter IPython
-;; -----------------------------------
-(setq ein:use-auto-complete t)
+
+
+
+;; IPython and Jupyter
+;; -------------------------
 (global-set-key (kbd "C-c C-n l") 'ein:notebooklist-login)
 (global-set-key (kbd "C-c C-n o") 'ein:notebooklist-open)
+
 
 ;; C++
 ;; --------------------------
@@ -136,10 +141,10 @@
 ;; Latex
 ;; ---------------------------
 
-;;(setq ispell-program-name "aspell")
-;;(setq ispell-dictionary "german")
-;;(add-hook 'LaTeX-mode-hook 'flyspell-mode)
-;;(add-hook 'LaTeX-mode-hook 'flyspell-buffer)
+(setq ispell-program-name "aspell")
+(setq ispell-dictionary "german")
+(add-hook 'LaTeX-mode-hook 'flyspell-mode)
+(add-hook 'LaTeX-mode-hook 'flyspell-buffer)
 
 (load "auctex.el" nil t t)
 
@@ -165,15 +170,16 @@
 (require 'ac-math) ; package should be installed first 
 (defun my-ac-latex-mode () ; add ac-sources for latex
   (setq ac-sources
-        (append '(ac-source-math-unicode
-          ac-source-math-latex
+        (append '(;;ac-source-math-unicode
+	  ac-source-math-latex
           ac-source-latex-commands)
                 ac-sources)))
 (add-hook 'LaTeX-mode-hook 'my-ac-latex-mode)
-(setq ac-math-unicode-in-math-p t)
+;;(setq ac-math-unicode-in-math-p t)
 (ac-flyspell-workaround) ; fixes a known bug of delay due to flyspell (if it is there)
 
 (require 'auto-complete-config) ; should be after add-to-list 'ac-modes and hooks
 (ac-config-default)
 (setq ac-auto-show-menu t)
 ;; (global-auto-complete-mode t) 
+(define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
