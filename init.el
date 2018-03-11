@@ -166,4 +166,10 @@
   '(setcar (cdr (assoc 'output-pdf TeX-view-program-selection)) "Okular"))
 
 
+(company-auctex-init)
+(setq company-math-disallow-unicode-symbols-in-face nil)
+(append '((company-math-symbols-latex company-math-symbols-unicode
+              company-auctex-macros company-auctex-environments))
+                      company-backends)
+
 ;; init.el ends here
