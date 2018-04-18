@@ -29,8 +29,11 @@
 ;; BASIC CUSTOMIZATION
 ;; --------------------------------------
 
+(require 'doom-themes)
+(load-theme 'doom-one t)
+
 (defalias 'yes-or-no-p 'y-or-n-p)
-(load-theme 'material t) ;; theme
+;; (load-theme 'material t) ;; theme
 (setq inhibit-startup-message t) ;; hide the startup message
 (global-linum-mode t) ;; enable line numbers globally
 (tool-bar-mode -1) ;;disable toolbar
@@ -64,6 +67,7 @@
 ;; PYTHON-ELPY
 ;; ---------------------------------------
 (add-hook 'python-mode-hook (lambda() (flyspell-prog-mode))) ;; flyspell for mi baad inglisch
+(require 'elpy)
 (elpy-enable)
 (setq elpy-rpc-python-command "python3") ;;use python3
 (setq python-shell-interpreter "python3");;use python3
@@ -83,65 +87,79 @@
 (require 'ein-connect)
 (global-set-key (kbd "C-c C-n l") 'ein:notebooklist-login)
 (global-set-key (kbd "C-c C-n o") 'ein:notebooklist-open)
+
 (setq ein:completion-backend 'ein:use-ac-jedi-backend)
+(setq ein:use-auto-complete-superpack t)
 
 
+;; C++
+;; --------------------------
+(setq c-default-style "linux"
+      c-basic-offset 2
+	  tab-width 2
+	  indent-tabs-mode t)
+;;(modern-c++-font-lock-global-mode t)
+;; flycheck
 
-;; ;; C++
-;; ;; --------------------------
-;; (setq c-default-style "linux"
-;;       c-basic-offset 4
-;; 	  tab-width 4
-;; 	  indent-tabs-mode t)
-;; ;;(modern-c++-font-lock-global-mode t)
-;; ;; flycheck
-;; (require 'flycheck)
-;; (add-hook 'c++-mode-hook
-;; 	  (lambda () (setq flycheck-clang-language-standard "c++11")))
-;; (add-hook 'c++-mode-hook 'flycheck-mode)
-;; ;; rtags for references and shit
-;; (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
-;; (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
-
-;; (defun my-goto-symbol ()
-;;   (interactive)
-;;   (deactivate-mark)
-;;   (ring-insert find-tag-marker-ring (point-marker))
-;;   (or (and (require 'rtags nil t)
-;; 	   (rtags-find-symbol-at-point))))
-
-;; (rtags-enable-standard-keybindings)
-
-;; (define-key global-map (kbd "C-c f") 'rtags-find-file)
-
-;; (define-key global-map (kbd "M-.") 'my-goto-symbol)
-;; (define-key global-map (kbd "M-,") 'pop-tag-mark)
+(custom-set-variables
+ '(flycheck-c/c++googlelint-executable "/usr/local/bin/cpplint.py"))
 
 
-;; ;; cmake-ide
-;; (require 'cmake-ide)
-;; (cmake-ide-setup)
-;; (setq cmake-ide-flags-c++ (append '("std=c++11")))
-;; (global-set-key (kbd "C-c m") 'cmake-ide-compile)
+(require 'flycheck)
+(eval-after-load 'flycheck
+  '(progn
+     (require 'flycheck-google-cpplint)
+     (flycheck-add-next-checker 'c/c++-clang
+				'(warning . c/c++-googlelint))))
+(custom-set-variables
+ '(flycheck-googlelint-verbose "0")
+ '(flycheck-googlelint-linelength "80"))
+(add-hook 'c++-mode-hook
+	  (lambda () (setq flycheck-clang-language-standard "c++11")))
+(add-hook 'c++-mode-hook 'flycheck-mode)
+;; rtags for references and shit
+(add-hook 'c-mode-hook 'rtags-start-process-unless-running)
+(add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
 
-;; ;; irony for completion
-;; (require 'irony)
-;; (require 'company-irony-c-headers)
-;; (add-hook 'c-mode-hook 'irony-mode)
-;; (add-hook 'c++-mode-hook 'irony-mode)
+(defun my-goto-symbol ()
+  (interactive)
+  (deactivate-mark)
+  (ring-insert find-tag-marker-ring (point-marker))
+  (or (and (require 'rtags nil t)
+	   (rtags-find-symbol-at-point))))
 
-;; (defun my-irony-mode-hook ()
-;;   (define-key irony-mode-map
-;;     [remap completion-at-point] 'irony-completion-at-point)
-;;   (define-key irony-mode-map
-;;     [remap complete-symbol] 'irony-completion-at-point))
-;; (add-hook 'irony-mode-hook 'my-irony-mode-hook)
-;; (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+(rtags-enable-standard-keybindings)
 
-;; (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
-;; (eval-after-load 'company '(add-to-list 'company-backends '(company-irony-c-headers
-;; 							    company-irony company-yasnippet
-;; 							    company-clang))) 
+(define-key global-map (kbd "C-c f") 'rtags-find-file)
+
+(define-key global-map (kbd "M-.") 'my-goto-symbol)
+(define-key global-map (kbd "M-,") 'pop-tag-mark)
+
+
+;; cmake-ide
+(require 'cmake-ide)
+(cmake-ide-setup)
+(setq cmake-ide-flags-c++ (append '("std=c++11")))
+(global-set-key (kbd "C-c m") 'cmake-ide-compile)
+
+;; irony for completion
+(require 'irony)
+(require 'company-irony-c-headers)
+(add-hook 'c-mode-hook 'irony-mode)
+(add-hook 'c++-mode-hook 'irony-mode)
+
+(defun my-irony-mode-hook ()
+  (define-key irony-mode-map
+    [remap completion-at-point] 'irony-completion-at-point)
+  (define-key irony-mode-map
+    [remap complete-symbol] 'irony-completion-at-point))
+(add-hook 'irony-mode-hook 'my-irony-mode-hook)
+(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+
+(add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
+(eval-after-load 'company '(add-to-list 'company-backends '(company-irony-c-headers
+							    company-irony company-yasnippet
+							    company-clang))) 
 
 ;; Latex
 ;; ---------------------------
@@ -173,3 +191,17 @@
                       company-backends)
 
 ;; init.el ends here
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (google-c-style yasnippet-snippets sublime-themes smartparens rtags py-autopep8 modern-cpp-font-lock material-theme jedi flycheck elpy ein doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
