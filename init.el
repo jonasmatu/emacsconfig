@@ -117,7 +117,7 @@
 (custom-set-variables
  '(flycheck-googlelint-verbose "0")
  '(flycheck-googlelint-linelength "80"))
->>>>>>> 2b11eb31bb3eced02eb367fd4fec0b7e80d152e4
+
 (add-hook 'c++-mode-hook
 	  (lambda () (setq flycheck-clang-language-standard "c++11")))
 (add-hook 'c++-mode-hook 'flycheck-mode)
