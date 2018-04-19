@@ -2,11 +2,12 @@
 
 ;; INSTALL PACKAGES
 ;; --------------------------------------
+(add-to-list 'load-path "~/.emacs.d/elisp")
 
 (require 'package)
 
 (add-to-list 'package-archives
-       '("melpa" . "http://melpa.org/packages/") t)
+	     '("melpa" . "http://melpa.org/packages/") t)
 
 (package-initialize)
 (when (not package-archive-contents)
@@ -17,35 +18,41 @@
     elpy
     flycheck
     material-theme
-    py-autopep8))
+    py-autopep8
+    company))
 
 (mapc #'(lambda (package)
-    (unless (package-installed-p package)
-      (package-install package)))
+	  (unless (package-installed-p package)
+	    (package-install package)))
       myPackages)
 
 ;; BASIC CUSTOMIZATION
 ;; --------------------------------------
+
+(require 'doom-themes)
+(load-theme 'doom-one t)
+
 (defalias 'yes-or-no-p 'y-or-n-p)
-(setq auto-save-default nil)
+;; (load-theme 'material t) ;; theme
 (setq inhibit-startup-message t) ;; hide the startup message
-(load-theme 'material t) ;; load material theme
+;;(load-theme 'material t) ;; load material theme
 (load-theme 'doom-one t)
 (global-linum-mode t) ;; enable line numbers globally
 (tool-bar-mode -1) ;;disable toolbar
 (menu-bar-mode -1) ;;disable menu bar
 
+
 ;; for smart parenthesis 
 (require 'smartparens-config)
 (show-smartparens-global-mode +1)
 (smartparens-global-mode 1)
-(sp-pair "(" ")" :wrap "C-(")
 
-;; ivy mode for a nice minibuffer 
+;;ivy mode(minibuffer)
 (ivy-mode 1)
 
+
 ;; COMPANY
-;; ----------------------------------------
+;; ----------------------------
 (add-hook 'after-init-hook 'global-company-mode)
 (setq company-dabbrev-downcase 0)
 (setq company-idle-delay 0)
@@ -59,22 +66,24 @@
 (yas-global-mode 1)
 
 
-;; Python
-;; ----------------------------------
+
+;; PYTHON-ELPY
+;; ---------------------------------------
 (add-hook 'python-mode-hook (lambda() (flyspell-prog-mode))) ;; flyspell for mi baad inglisch
+(require 'elpy)
 (elpy-enable)
 (setq elpy-rpc-python-command "python3") ;;use python3
 (setq python-shell-interpreter "python3");;use python3
-(setq elpy-rpc-backend "jedi")
 (when (require 'flycheck nil t)
   (setq elpy-modules(delq 'elpy-module-flymake elpy-modules))
   (add-hook 'elpy-mode-hook 'flycheck-mode))
 (require 'py-autopep8)
 (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
-;; elpy keybindings
+
 (global-set-key (kbd "M-n") 'elpy-nav-forward-block)   ;;move bock down
 (global-set-key (kbd "M-p") 'elpy-nav-backward-block)  ;;move bock up
 (global-set-key (kbd "M-,") 'pop-tag-mark) ;; go to last place where M-. was used (go-to-definition)
+
 
 ;; IPython and Jupyter
 ;; -------------------------
@@ -86,16 +95,29 @@
 (setq ein:use-auto-complete-superpack t)
 
 
-
 ;; C++
 ;; --------------------------
 (setq c-default-style "linux"
-      c-basic-offset 4
-	  tab-width 4
+      c-basic-offset 2
+	  tab-width 2
 	  indent-tabs-mode t)
 ;;(modern-c++-font-lock-global-mode t)
 ;; flycheck
+
+(custom-set-variables
+ '(flycheck-c/c++googlelint-executable "/usr/local/bin/cpplint.py"))
+
+
 (require 'flycheck)
+(eval-after-load 'flycheck
+  '(progn
+     (require 'flycheck-google-cpplint)
+     (flycheck-add-next-checker 'c/c++-clang
+				'(warning . c/c++-googlelint))))
+(custom-set-variables
+ '(flycheck-googlelint-verbose "0")
+ '(flycheck-googlelint-linelength "80"))
+>>>>>>> 2b11eb31bb3eced02eb367fd4fec0b7e80d152e4
 (add-hook 'c++-mode-hook
 	  (lambda () (setq flycheck-clang-language-standard "c++11")))
 (add-hook 'c++-mode-hook 'flycheck-mode)
@@ -167,11 +189,10 @@
 
 
 (company-auctex-init)
-(setq company-math-disallow-unicode-symbols-in-faces nil)
+(setq company-math-disallow-unicode-symbols-in-face nil)
 (append '((company-math-symbols-latex company-math-symbols-unicode
-				      company-auctex-macros company-auctex-environments))
+              company-auctex-macros company-auctex-environments))
                       company-backends)
-
 
 ;; auto-complete
 ;;(defadvice auto-complete-mode (around disable-auto-complete-for-python)
@@ -196,17 +217,23 @@
 ;; (setq ac-auto-show-menu t)
 ;; ;; (global-auto-complete-mode t) 
 ;; (define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (yasnippet-snippets doom-themes solarized-theme smartparens rtags py-autopep8 material-theme leuven-theme latex-preview-pane jedi flycheck elpy ein company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults autothemer))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
+;; init.el ends here
+;; (custom-set-variables
+;;  ;; custom-set-variables was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  '(package-selected-packages
+;;    (quote
+;; <<<<<<< HEAD
+;;     (yasnippet-snippets doom-themes solarized-theme smartparens rtags py-autopep8 material-theme leuven-theme latex-preview-pane jedi flycheck elpy ein company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults autothemer))))
+;; =======
+;;     (google-c-style yasnippet-snippets sublime-themes smartparens rtags py-autopep8 modern-cpp-font-lock material-theme jedi flycheck elpy ein doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
+;; >>>>>>> 2b11eb31bb3eced02eb367fd4fec0b7e80d152e4
+;; (custom-set-faces
+;;  ;; custom-set-faces was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  )
