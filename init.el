@@ -30,7 +30,7 @@
 (setq auto-save-default nil)
 (setq inhibit-startup-message t) ;; hide the startup message
 (load-theme 'material t) ;; load material theme
-;;(load-theme 'solarized-light t)
+(load-theme 'doom-one t)
 (global-linum-mode t) ;; enable line numbers globally
 (tool-bar-mode -1) ;;disable toolbar
 (menu-bar-mode -1) ;;disable menu bar
@@ -41,20 +41,22 @@
 (smartparens-global-mode 1)
 (sp-pair "(" ")" :wrap "C-(")
 
+;; ivy mode for a nice minibuffer 
 (ivy-mode 1)
 
-;; autocomplete mit company
+;; COMPANY
+;; ----------------------------------------
 (add-hook 'after-init-hook 'global-company-mode)
 (setq company-dabbrev-downcase 0)
 (setq company-idle-delay 0)
 (setq company-require-match nil)
 
 ;; yasnippet
+;; ------------------------------------
 (require 'yasnippet)
 (yas-reload-all)
 (add-hook 'c++-mode-hook #'yas-minor-mode)
 (yas-global-mode 1)
-
 
 
 ;; Python
@@ -85,61 +87,61 @@
 
 
 
-;; ;; C++
-;; ;; --------------------------
-;; (setq c-default-style "linux"
-;;       c-basic-offset 4
-;; 	  tab-width 4
-;; 	  indent-tabs-mode t)
-;; ;;(modern-c++-font-lock-global-mode t)
-;; ;; flycheck
-;; (require 'flycheck)
-;; (add-hook 'c++-mode-hook
-;; 	  (lambda () (setq flycheck-clang-language-standard "c++11")))
-;; (add-hook 'c++-mode-hook 'flycheck-mode)
-;; ;; rtags for references and shit
-;; (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
-;; (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
+;; C++
+;; --------------------------
+(setq c-default-style "linux"
+      c-basic-offset 4
+	  tab-width 4
+	  indent-tabs-mode t)
+;;(modern-c++-font-lock-global-mode t)
+;; flycheck
+(require 'flycheck)
+(add-hook 'c++-mode-hook
+	  (lambda () (setq flycheck-clang-language-standard "c++11")))
+(add-hook 'c++-mode-hook 'flycheck-mode)
+;; rtags for references and shit
+(add-hook 'c-mode-hook 'rtags-start-process-unless-running)
+(add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
 
-;; (defun my-goto-symbol ()
-;;   (interactive)
-;;   (deactivate-mark)
-;;   (ring-insert find-tag-marker-ring (point-marker))
-;;   (or (and (require 'rtags nil t)
-;; 	   (rtags-find-symbol-at-point))))
+(defun my-goto-symbol ()
+  (interactive)
+  (deactivate-mark)
+  (ring-insert find-tag-marker-ring (point-marker))
+  (or (and (require 'rtags nil t)
+	   (rtags-find-symbol-at-point))))
 
-;; (rtags-enable-standard-keybindings)
+(rtags-enable-standard-keybindings)
 
-;; (define-key global-map (kbd "C-c f") 'rtags-find-file)
+(define-key global-map (kbd "C-c f") 'rtags-find-file)
 
-;; (define-key global-map (kbd "M-.") 'my-goto-symbol)
-;; (define-key global-map (kbd "M-,") 'pop-tag-mark)
+(define-key global-map (kbd "M-.") 'my-goto-symbol)
+(define-key global-map (kbd "M-,") 'pop-tag-mark)
 
 
-;; ;; cmake-ide
-;; (require 'cmake-ide)
-;; (cmake-ide-setup)
-;; (setq cmake-ide-flags-c++ (append '("std=c++11")))
-;; (global-set-key (kbd "C-c m") 'cmake-ide-compile)
+;; cmake-ide
+(require 'cmake-ide)
+(cmake-ide-setup)
+(setq cmake-ide-flags-c++ (append '("std=c++11")))
+(global-set-key (kbd "C-c m") 'cmake-ide-compile)
 
-;; ;; irony for completion
-;; (require 'irony)
-;; (require 'company-irony-c-headers)
-;; (add-hook 'c-mode-hook 'irony-mode)
-;; (add-hook 'c++-mode-hook 'irony-mode)
+;; irony for completion
+(require 'irony)
+(require 'company-irony-c-headers)
+(add-hook 'c-mode-hook 'irony-mode)
+(add-hook 'c++-mode-hook 'irony-mode)
 
-;; (defun my-irony-mode-hook ()
-;;   (define-key irony-mode-map
-;;     [remap completion-at-point] 'irony-completion-at-point)
-;;   (define-key irony-mode-map
-;;     [remap complete-symbol] 'irony-completion-at-point))
-;; (add-hook 'irony-mode-hook 'my-irony-mode-hook)
-;; (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+(defun my-irony-mode-hook ()
+  (define-key irony-mode-map
+    [remap completion-at-point] 'irony-completion-at-point)
+  (define-key irony-mode-map
+    [remap complete-symbol] 'irony-completion-at-point))
+(add-hook 'irony-mode-hook 'my-irony-mode-hook)
+(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
 
-;; (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
-;; (eval-after-load 'company '(add-to-list 'company-backends '(company-irony-c-headers
-;; 							    company-irony company-yasnippet
-;; 							    company-clang))) 
+(add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
+(eval-after-load 'company '(add-to-list 'company-backends '(company-irony-c-headers
+							    company-irony company-yasnippet
+							    company-clang))) 
 
 ;; Latex
 ;; ---------------------------
@@ -194,3 +196,17 @@
 ;; (setq ac-auto-show-menu t)
 ;; ;; (global-auto-complete-mode t) 
 ;; (define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (yasnippet-snippets doom-themes solarized-theme smartparens rtags py-autopep8 material-theme leuven-theme latex-preview-pane jedi flycheck elpy ein company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults autothemer))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
