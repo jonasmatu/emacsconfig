@@ -102,12 +102,12 @@
 	  tab-width 2
 	  indent-tabs-mode t)
 ;;(modern-c++-font-lock-global-mode t)
-;; flycheck
+;; flycheck and goolge's cpplint checkstyle 
+;; (add-hook 'c-mode-common-hook 'google-set-c-style)
+;; (add-hook 'c-mode-common-hook 'google-make-newline-indent)
 
 (custom-set-variables
  '(flycheck-c/c++googlelint-executable "/usr/local/bin/cpplint.py"))
-
-
 (require 'flycheck)
 (eval-after-load 'flycheck
   '(progn
