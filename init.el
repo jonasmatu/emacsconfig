@@ -3,7 +3,6 @@
 ;; INSTALL PACKAGES
 ;; --------------------------------------
 (add-to-list 'load-path "~/.emacs.d/elisp")
-
 (require 'package)
 
 (add-to-list 'package-archives
@@ -103,20 +102,27 @@
 	  indent-tabs-mode t)
 ;;(modern-c++-font-lock-global-mode t)
 ;; flycheck and goolge's cpplint checkstyle 
-;; (add-hook 'c-mode-common-hook 'google-set-c-style)
-;; (add-hook 'c-mode-common-hook 'google-make-newline-indent)
+(add-hook 'c-mode-common-hook 'google-set-c-style)
+(add-hook 'c-mode-common-hook 'google-make-newline-indent)
 
 (custom-set-variables
- '(flycheck-c/c++googlelint-executable "/usr/local/bin/cpplint.py"))
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(flycheck-c/c++googlelint-executable "/usr/local/bin/cpplint.py")
+ '(flycheck-googlelint-linelength "80")
+ '(flycheck-googlelint-verbose "0")
+ '(package-selected-packages
+   (quote
+    (yasnippet-snippets solarized-theme smartparens rtags py-autopep8 material-theme leuven-theme latex-preview-pane jedi google-c-style flycheck elpy ein doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults autothemer))))
 (require 'flycheck)
 (eval-after-load 'flycheck
   '(progn
      (require 'flycheck-google-cpplint)
      (flycheck-add-next-checker 'c/c++-clang
 				'(warning . c/c++-googlelint))))
-(custom-set-variables
- '(flycheck-googlelint-verbose "0")
- '(flycheck-googlelint-linelength "80"))
+
 
 (add-hook 'c++-mode-hook
 	  (lambda () (setq flycheck-clang-language-standard "c++11")))
@@ -219,21 +225,3 @@
 ;; (define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
 
 ;; init.el ends here
-;; (custom-set-variables
-;;  ;; custom-set-variables was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(package-selected-packages
-;;    (quote
-;; <<<<<<< HEAD
-;;     (yasnippet-snippets doom-themes solarized-theme smartparens rtags py-autopep8 material-theme leuven-theme latex-preview-pane jedi flycheck elpy ein company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults autothemer))))
-;; =======
-;;     (google-c-style yasnippet-snippets sublime-themes smartparens rtags py-autopep8 modern-cpp-font-lock material-theme jedi flycheck elpy ein doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
-;; >>>>>>> 2b11eb31bb3eced02eb367fd4fec0b7e80d152e4
-;; (custom-set-faces
-;;  ;; custom-set-faces was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  )
