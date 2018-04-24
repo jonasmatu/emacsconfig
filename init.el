@@ -3,7 +3,6 @@
 ;; INSTALL PACKAGES
 ;; --------------------------------------
 (add-to-list 'load-path "~/.emacs.d/elisp")
-
 (require 'package)
 
 (add-to-list 'package-archives
@@ -35,6 +34,8 @@
 (defalias 'yes-or-no-p 'y-or-n-p)
 ;; (load-theme 'material t) ;; theme
 (setq inhibit-startup-message t) ;; hide the startup message
+;;(load-theme 'material t) ;; load material theme
+(load-theme 'doom-one t)
 (global-linum-mode t) ;; enable line numbers globally
 (tool-bar-mode -1) ;;disable toolbar
 (menu-bar-mode -1) ;;disable menu bar
@@ -57,6 +58,7 @@
 (setq company-require-match nil)
 
 ;; yasnippet
+;; ------------------------------------
 (require 'yasnippet)
 (yas-reload-all)
 (add-hook 'c++-mode-hook #'yas-minor-mode)
@@ -98,28 +100,40 @@
 	  tab-width 2
 	  indent-tabs-mode t)
 ;;(modern-c++-font-lock-global-mode t)
-;; flycheck
+;; flycheck and goolge's cpplint checkstyle 
+(add-hook 'c-mode-common-hook 'google-set-c-style)
+(add-hook 'c-mode-common-hook 'google-make-newline-indent)
 
 (add-hook 'c-mode-common-hook 'google-set-c-style)
 (add-hook 'c-mode-common-hook 'google-make-newline-indent)
 
 (custom-set-variables
- '(flycheck-c/c++googlelint-executable "/usr/local/bin/cpplint.py"))
-
-
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(flycheck-c/c++googlelint-executable "/usr/local/bin/cpplint.py")
+ '(flycheck-googlelint-linelength "80")
+ '(flycheck-googlelint-verbose "0")
+ '(package-selected-packages
+   (quote
+    (yasnippet-snippets solarized-theme smartparens rtags py-autopep8 material-theme leuven-theme latex-preview-pane jedi google-c-style flycheck elpy ein doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults autothemer))))
 (require 'flycheck)
 (eval-after-load 'flycheck
   '(progn
      (require 'flycheck-google-cpplint)
      (flycheck-add-next-checker 'c/c++-clang
 				'(warning . c/c++-googlelint))))
+
 (custom-set-variables
  '(flycheck-googlelint-verbose "0")
  '(flycheck-googlelint-root ".")
  '(flycheck-googlelint-linelength "80"))
+
 (add-hook 'c++-mode-hook
 	  (lambda () (setq flycheck-clang-language-standard "c++11")))
 (add-hook 'c++-mode-hook 'flycheck-mode)
+(add-hook 'c-mode-hook 'flycheck-mode)
 ;; rtags for references and shit
 (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
 (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
@@ -193,18 +207,28 @@
               company-auctex-macros company-auctex-environments))
                       company-backends)
 
+;; auto-complete
+;;(defadvice auto-complete-mode (around disable-auto-complete-for-python)
+;;  (unless (eq major-mode 'python-mode) ad-do-it))
+
+;;(ad-activate 'auto-complete-mode)
+;;(require 'auto-complete)
+;;(add-to-list 'ac-modes 'latex-mode) ; beware of using 'LaTeX-mode instead
+;;(require 'ac-math) ; package should be installed first 
+;; (defun my-ac-latex-mode () ; add ac-sources for latex
+;;   (setq ac-sources
+;;         (append '(;;ac-source-math-unicode
+;; 	  ac-source-math-latex
+;;           ac-source-latex-commands)
+;;                 ac-sources)))
+;; (add-hook 'LaTeX-mode-hook 'my-ac-latex-mode)
+;; ;;(setq ac-math-unicode-in-math-p t)
+;; (ac-flyspell-workaround) ; fixes a known bug of delay due to flyspell (if it is there)
+
+;; (require 'auto-complete-config) ; should be after add-to-list 'ac-modes and hooks
+;; (ac-config-default)
+;; (setq ac-auto-show-menu t)
+;; ;; (global-auto-complete-mode t) 
+;; (define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
+
 ;; init.el ends here
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (google-c-style yasnippet-snippets sublime-themes smartparens rtags py-autopep8 modern-cpp-font-lock material-theme jedi flycheck elpy ein doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
