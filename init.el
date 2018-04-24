@@ -91,7 +91,6 @@
 (setq ein:completion-backend 'ein:use-ac-jedi-backend)
 (setq ein:use-auto-complete-superpack t)
 
-
 ;; C++
 ;; --------------------------
 (setq c-default-style "linux"
@@ -100,6 +99,9 @@
 	  indent-tabs-mode t)
 ;;(modern-c++-font-lock-global-mode t)
 ;; flycheck
+
+(add-hook 'c-mode-common-hook 'google-set-c-style)
+(add-hook 'c-mode-common-hook 'google-make-newline-indent)
 
 (custom-set-variables
  '(flycheck-c/c++googlelint-executable "/usr/local/bin/cpplint.py"))
@@ -113,6 +115,7 @@
 				'(warning . c/c++-googlelint))))
 (custom-set-variables
  '(flycheck-googlelint-verbose "0")
+ '(flycheck-googlelint-root ".")
  '(flycheck-googlelint-linelength "80"))
 (add-hook 'c++-mode-hook
 	  (lambda () (setq flycheck-clang-language-standard "c++11")))
