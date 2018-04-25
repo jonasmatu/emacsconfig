@@ -92,7 +92,6 @@
 (setq ein:completion-backend 'ein:use-ac-jedi-backend)
 (setq ein:use-auto-complete-superpack t)
 
-
 ;; C++
 ;; --------------------------
 (setq c-default-style "linux"
@@ -101,6 +100,9 @@
 	  indent-tabs-mode t)
 ;;(modern-c++-font-lock-global-mode t)
 ;; flycheck and goolge's cpplint checkstyle
+
+(add-hook 'c-mode-common-hook 'google-set-c-style)
+(add-hook 'c-mode-common-hook 'google-make-newline-indent)
 
 (add-hook 'c-mode-common-hook 'google-set-c-style)
 (add-hook 'c-mode-common-hook 'google-make-newline-indent)
@@ -123,10 +125,15 @@
      (flycheck-add-next-checker 'c/c++-clang
 				'(warning . c/c++-googlelint))))
 
+(custom-set-variables
+ '(flycheck-googlelint-verbose "0")
+ '(flycheck-googlelint-root ".")
+ '(flycheck-googlelint-linelength "80"))
 
 (add-hook 'c++-mode-hook
 	  (lambda () (setq flycheck-clang-language-standard "c++11")))
 (add-hook 'c++-mode-hook 'flycheck-mode)
+(add-hook 'c-mode-hook 'flycheck-mode)
 ;; rtags for references and shit
 (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
 (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
