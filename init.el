@@ -52,6 +52,7 @@
 
 ;; COMPANY
 ;; ----------------------------
+(require)
 (add-hook 'after-init-hook 'global-company-mode)
 (setq company-dabbrev-downcase 0)
 (setq company-idle-delay 0)
@@ -114,21 +115,17 @@
  ;; If there is more than one, they won't work right.
  '(flycheck-c/c++googlelint-executable "/usr/local/bin/cpplint.py")
  '(flycheck-googlelint-linelength "80")
+ '(flycheck-googlelint-root ".")
  '(flycheck-googlelint-verbose "0")
  '(package-selected-packages
-   (quote
-    (yasnippet-snippets solarized-theme smartparens rtags py-autopep8 material-theme leuven-theme latex-preview-pane jedi google-c-style flycheck elpy ein doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults autothemer))))
+   ;; (quote
+   ;;  (yasnippet-snippets smartparens rtags py-autopep8 material-theme jedi google-c-style flycheck elpy ein doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
 (require 'flycheck)
 (eval-after-load 'flycheck
   '(progn
      (require 'flycheck-google-cpplint)
      (flycheck-add-next-checker 'c/c++-clang
 				'(warning . c/c++-googlelint))))
-
-(custom-set-variables
- '(flycheck-googlelint-verbose "0")
- '(flycheck-googlelint-root ".")
- '(flycheck-googlelint-linelength "80"))
 
 (add-hook 'c++-mode-hook
 	  (lambda () (setq flycheck-clang-language-standard "c++11")))
@@ -232,3 +229,9 @@
 ;; (define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
 
 ;; init.el ends here
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
