@@ -49,7 +49,6 @@
 ;;ivy mode(minibuffer)
 (ivy-mode 1)
 
-
 ;; COMPANY
 ;; ----------------------------
 (require)
@@ -101,7 +100,8 @@
 	  tab-width 2
 	  indent-tabs-mode t)
 ;;(modern-c++-font-lock-global-mode t)
-;; flycheck and goolge's cpplint checkstyle 
+;; flycheck and goolge's cpplint checkstyle
+
 (add-hook 'c-mode-common-hook 'google-set-c-style)
 (add-hook 'c-mode-common-hook 'google-make-newline-indent)
 
