@@ -1,5 +1,4 @@
 ;; init.el --- Emacs configuration
-
 ;; INSTALL PACKAGES
 ;; --------------------------------------
 (add-to-list 'load-path "~/.emacs.d/elisp")
@@ -51,7 +50,7 @@
 
 ;; COMPANY
 ;; ----------------------------
-(require)
+(require 'company)
 (add-hook 'after-init-hook 'global-company-mode)
 (setq company-dabbrev-downcase 0)
 (setq company-idle-delay 0)
@@ -105,9 +104,6 @@
 (add-hook 'c-mode-common-hook 'google-set-c-style)
 (add-hook 'c-mode-common-hook 'google-make-newline-indent)
 
-(add-hook 'c-mode-common-hook 'google-set-c-style)
-(add-hook 'c-mode-common-hook 'google-make-newline-indent)
-
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -118,8 +114,8 @@
  '(flycheck-googlelint-root ".")
  '(flycheck-googlelint-verbose "0")
  '(package-selected-packages
-   ;; (quote
-   ;;  (yasnippet-snippets smartparens rtags py-autopep8 material-theme jedi google-c-style flycheck elpy ein doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
+   (quote
+    (yasnippet-snippets smartparens rtags py-autopep8 material-theme jedi google-c-style flycheck elpy ein doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
 (require 'flycheck)
 (eval-after-load 'flycheck
   '(progn
@@ -146,8 +142,8 @@
 
 (define-key global-map (kbd "C-c f") 'rtags-find-file)
 
-(define-key global-map (kbd "M-.") 'my-goto-symbol)
-(define-key global-map (kbd "M-,") 'pop-tag-mark)
+(define-key c-mode-base-map (kbd "M-.") 'my-goto-symbol)
+(define-key c-mode-base-map (kbd "M-,") 'pop-tag-mark)
 
 
 ;; cmake-ide
@@ -204,31 +200,6 @@
               company-auctex-macros company-auctex-environments))
                       company-backends)
 
-;; auto-complete
-;;(defadvice auto-complete-mode (around disable-auto-complete-for-python)
-;;  (unless (eq major-mode 'python-mode) ad-do-it))
-
-;;(ad-activate 'auto-complete-mode)
-;;(require 'auto-complete)
-;;(add-to-list 'ac-modes 'latex-mode) ; beware of using 'LaTeX-mode instead
-;;(require 'ac-math) ; package should be installed first 
-;; (defun my-ac-latex-mode () ; add ac-sources for latex
-;;   (setq ac-sources
-;;         (append '(;;ac-source-math-unicode
-;; 	  ac-source-math-latex
-;;           ac-source-latex-commands)
-;;                 ac-sources)))
-;; (add-hook 'LaTeX-mode-hook 'my-ac-latex-mode)
-;; ;;(setq ac-math-unicode-in-math-p t)
-;; (ac-flyspell-workaround) ; fixes a known bug of delay due to flyspell (if it is there)
-
-;; (require 'auto-complete-config) ; should be after add-to-list 'ac-modes and hooks
-;; (ac-config-default)
-;; (setq ac-auto-show-menu t)
-;; ;; (global-auto-complete-mode t) 
-;; (define-key ac-mode-map (kbd "M-TAB") 'auto-complete)
-
-;; init.el ends here
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
