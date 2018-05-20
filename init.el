@@ -73,6 +73,7 @@
 (setq elpy-rpc-python-command "python3") ;;use python3
 (setq python-shell-interpreter "python3");;use python3
 (setq elpy-shell-echo-input nil)
+(setq python-shell-completion-native-enable nil)
 (when (require 'flycheck nil t)
   (setq elpy-modules(delq 'elpy-module-flymake elpy-modules))
   (add-hook 'elpy-mode-hook 'flycheck-mode))
