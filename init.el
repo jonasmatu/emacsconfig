@@ -29,7 +29,6 @@
 
 (require 'doom-themes)
 (load-theme 'doom-one t)
-
 (defalias 'yes-or-no-p 'y-or-n-p)
 ;; (load-theme 'material t) ;; theme
 (setq inhibit-startup-message t) ;; hide the startup message
@@ -96,6 +95,9 @@
 
 ;; C++
 ;; --------------------------
+
+(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+
 (setq c-default-style "linux"
       c-basic-offset 2
 	  tab-width 2
