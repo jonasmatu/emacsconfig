@@ -1,6 +1,7 @@
 ;; init.el --- Emacs configuration
 ;; INSTALL PACKAGES
 ;; --------------------------------------
+
 (add-to-list 'load-path "~/.emacs.d/elisp")
 (require 'package)
 
@@ -26,7 +27,6 @@
 
 ;; BASIC CUSTOMIZATION
 ;; --------------------------------------
-
 (require 'doom-themes)
 (load-theme 'doom-one t)
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -39,6 +39,18 @@
 (menu-bar-mode -1) ;;disable menu bar
 
 
+;; flyspell
+;; --------------------------
+;; switch between german and english
+(defun fd-switch-dictionary()
+      (interactive)
+      (let* ((dic ispell-current-dictionary)
+    	 (change (if (string= dic "deutsch8") "english" "deutsch8")))
+        (ispell-change-dictionary change)
+        (message "Dictionary switched from %s to %s" dic change)
+        ))
+
+
 ;; for smart parenthesis 
 (require 'smartparens-config)
 (show-smartparens-global-mode +1)
@@ -46,14 +58,6 @@
 
 ;;ivy mode(minibuffer)
 (ivy-mode 1)
-
-;; COMPANY
-;; ----------------------------
-(require 'company)
-(add-hook 'after-init-hook 'global-company-mode)
-(setq company-dabbrev-downcase 0)
-(setq company-idle-delay 0)
-(setq company-require-match nil)
 
 ;; yasnippet
 ;; ------------------------------------
@@ -63,6 +67,31 @@
 (yas-global-mode 1)
 
 
+;; COMPANY
+;; ----------------------------
+(require 'company)
+(add-hook 'after-init-hook 'global-company-mode)
+(setq company-dabbrev-downcase 0)
+(setq company-idle-delay 0)
+(setq company-require-match nil)
+
+;; company yasnippet fix
+;; (defun company-yasnippet-or-completion ()
+;;   (interactive)
+;;   (let ((yas-fallback-behavior nil))
+;;     (unless (yas-expand)
+;;       (call-interactively #'company-complete-common))))
+;; (add-hook 'company-mode-hook (lambda ()
+;;   (substitute-key-definition 'company-complete-common
+;;                              'company-yasnippet-or-completion
+;;                              company-active-map)))
+
+
+;; multiple-cursors
+;; --------------------------------------
+(require 'multiple-cursors)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 
 ;; PYTHON-ELPY
 ;; ---------------------------------------
@@ -95,7 +124,7 @@
 
 ;; C++
 ;; --------------------------
-
+(add-hook 'c-mode-common-hook (lambda() (flyspell-prog-mode))) ;; flyspell for mi baad inglisch
 (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
 (setq c-default-style "linux"
@@ -119,7 +148,7 @@
  '(flycheck-googlelint-verbose "0")
  '(package-selected-packages
    (quote
-    (yasnippet-snippets smartparens rtags py-autopep8 material-theme jedi google-c-style flycheck elpy ein doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
+    (multiple-cursors yasnippet-snippets smartparens rtags py-autopep8 material-theme jedi google-c-style flycheck elpy ein doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
 (require 'flycheck)
 (eval-after-load 'flycheck
   '(progn
@@ -156,6 +185,8 @@
 (setq cmake-ide-flags-c++ (append '("std=c++11")))
 (global-set-key (kbd "C-c m") 'cmake-ide-compile)
 
+
+
 ;; irony for completion
 (require 'irony)
 (require 'company-irony-c-headers)
@@ -170,16 +201,27 @@
 (add-hook 'irony-mode-hook 'my-irony-mode-hook)
 (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
 
+
 (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
 (eval-after-load 'company '(add-to-list 'company-backends '(company-irony-c-headers
-							    company-irony company-yasnippet
-							    company-clang))) 
+							    company-irony ;; company-yasnippet
+							    company-clang)))
+
+;; Add yasnippet support for all company backends
+;; https://github.com/syl20bnr/spacemacs/pull/179
+(defvar company-mode/enable-yas t
+  "Enable yasnippet for all backends.")
+
+(defun company-mode/backend-with-yas (backend)
+  (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+      backend
+    (append (if (consp backend) backend (list backend))
+            '(:with company-yasnippet))))
+
+(setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
 
 ;; Latex
 ;; ---------------------------
-
-(setq ispell-program-name "aspell")
-(setq ispell-dictionary "german")
 (add-hook 'LaTeX-mode-hook 'flyspell-mode)
 (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
 
