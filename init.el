@@ -62,6 +62,7 @@
 ;; yasnippet
 ;; ------------------------------------
 (require 'yasnippet)
+(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
 (yas-reload-all)
 (add-hook 'c++-mode-hook #'yas-minor-mode)
 (yas-global-mode 1)
@@ -92,6 +93,14 @@
 (require 'multiple-cursors)
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+
+;; Python ROOT
+(setenv "ROOTSYS" "/usr/local/root")
+(setenv "PYTHONDIR" "/usr/local/root:$PYTONDIR")
+(setenv "PYTHONPATH" "/usr/local/root/lib::/usr/local/root/bindings/pyroot:$PYTHONPATH")
+;; (setenv "PATH" "/usr/local/root/bin")
+(setenv "LD_LIBRARY_PATH"
+	"/usr/local/root/lib:/usr/local/root/lib:/usr/local/root/bindings/pyroot:$LD_LIBRARY_PATH")
 
 ;; PYTHON-ELPY
 ;; ---------------------------------------
@@ -148,7 +157,7 @@
  '(flycheck-googlelint-verbose "0")
  '(package-selected-packages
    (quote
-    (multiple-cursors yasnippet-snippets smartparens rtags py-autopep8 material-theme jedi google-c-style flycheck elpy ein doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
+    (jedi-core virtualenv multiple-cursors smartparens rtags py-autopep8 material-theme jedi google-c-style flycheck elpy ein doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
 (require 'flycheck)
 (eval-after-load 'flycheck
   '(progn
