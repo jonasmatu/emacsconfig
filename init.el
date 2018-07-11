@@ -2,28 +2,32 @@
 ;; INSTALL PACKAGES
 ;; --------------------------------------
 
-(add-to-list 'load-path "~/.emacs.d/elisp")
+;; (add-to-list 'load-path "~/.emacs.d/elisp")
 (require 'package)
 
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.org/packages/") t)
 
 (package-initialize)
-(when (not package-archive-contents)
-  (package-refresh-contents))
+;; (when (not package-archive-contents)
+;;   (package-refresh-contents))
 
-(defvar myPackages
-  '(better-defaults
-    elpy
-    flycheck
-    material-theme
-    py-autopep8
-    company))
 
-(mapc #'(lambda (package)
-	  (unless (package-installed-p package)
-	    (package-install package)))
-      myPackages)
+(require 'benchmark-init)
+(add-hook 'after-init-hook 'benchmark-init/deactivate)
+
+;; (defvar myPackages
+;;   '(better-defaults
+;;     elpy
+;;     flycheck
+;;     material-theme
+;;     py-autopep8
+;;     company))
+
+;; (mapc #'(lambda (package)		
+;; 	  (unless (package-installed-p package)
+;; 	    (package-install package)))
+;;       myPackages)
 
 ;; BASIC CUSTOMIZATION
 ;; --------------------------------------
@@ -63,7 +67,8 @@
 ;; ------------------------------------
 (require 'yasnippet)
 (yas-reload-all)
-(add-hook 'c++-mode-hook #'yas-minor-mode)
+(add-hook 'prog-mode-hook #'yas-minor-mode)
+(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
 (yas-global-mode 1)
 
 
@@ -113,14 +118,14 @@
 (global-set-key (kbd "M-,") 'pop-tag-mark) ;; go to last place where M-. was used (go-to-definition)
 
 
-;; IPython and Jupyter
+;; IPython and Jupyter (makes the startup really slow :( )
 ;; -------------------------
-(require 'ein-connect)
-(global-set-key (kbd "C-c C-n l") 'ein:notebooklist-login)
-(global-set-key (kbd "C-c C-n o") 'ein:notebooklist-open)
+;; (require 'ein-connect)
+;; (global-set-key (kbd "C-c C-n l") 'ein:notebooklist-login)
+;; (global-set-key (kbd "C-c C-n o") 'ein:notebooklist-open)
 
-(setq ein:completion-backend 'ein:use-ac-jedi-backend)
-(setq ein:use-auto-complete-superpack t)
+;; (setq ein:completion-backend 'ein:use-ac-jedi-backend)
+;; (setq ein:use-auto-complete-superpack t)
 
 ;; C++
 ;; --------------------------
@@ -148,7 +153,7 @@
  '(flycheck-googlelint-verbose "0")
  '(package-selected-packages
    (quote
-    (multiple-cursors yasnippet-snippets smartparens rtags py-autopep8 material-theme jedi google-c-style flycheck elpy ein doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
+    (benchmark-init multiple-cursors smartparens rtags py-autopep8 material-theme jedi google-c-style flycheck elpy doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
 (require 'flycheck)
 (eval-after-load 'flycheck
   '(progn
