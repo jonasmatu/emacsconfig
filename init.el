@@ -2,28 +2,34 @@
 ;; INSTALL PACKAGES
 ;; --------------------------------------
 
-(add-to-list 'load-path "~/.emacs.d/elisp")
+;; nothing in there !
+;; (add-to-list 'load-path "~/.emacs.d/elisp")
 (require 'package)
-
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.org/packages/") t)
 
+
+(setq gc-cons-threshold 100000000)
 (package-initialize)
-(when (not package-archive-contents)
-  (package-refresh-contents))
+;; (when (not package-archive-contents)
+;;   (package-refresh-contents))
 
-(defvar myPackages
-  '(better-defaults
-    elpy
-    flycheck
-    material-theme
-    py-autopep8
-    company))
+;; (defvar myPackages
+;;   '(better-defaults
+;;     elpy
+;;     flycheck
+;;     material-theme
+;;     py-autopep8
+;;     company))
 
-(mapc #'(lambda (package)
-	  (unless (package-installed-p package)
-	    (package-install package)))
-      myPackages)
+;; (mapc #'(lambda (package)
+;; 	  (unless (package-installed-p package)
+;; 	    (package-install package)))
+;;       myPackages)
+
+;; emacs benchmark
+(require 'benchmark-init)
+(add-hook 'after-init-hook 'benchmark-init/deactivate)
 
 ;; BASIC CUSTOMIZATION
 ;; --------------------------------------
@@ -37,7 +43,6 @@
 (global-linum-mode t) ;; enable line numbers globally
 (tool-bar-mode -1) ;;disable toolbar
 (menu-bar-mode -1) ;;disable menu bar
-
 
 ;; flyspell
 ;; --------------------------
@@ -122,14 +127,15 @@
 (global-set-key (kbd "M-,") 'pop-tag-mark) ;; go to last place where M-. was used (go-to-definition)
 
 
-;; IPython and Jupyter
+;; IPython and Jupyter ( makes emacs startup quite slow :( )
 ;; -------------------------
-(require 'ein-connect)
-(global-set-key (kbd "C-c C-n l") 'ein:notebooklist-login)
-(global-set-key (kbd "C-c C-n o") 'ein:notebooklist-open)
+;; (require 'ein-connect)
+;; (global-set-key (kbd "C-c C-n l") 'ein:notebooklist-login)
+;; (global-set-key (kbd "C-c C-n o") 'ein:notebooklist-open)
 
-(setq ein:completion-backend 'ein:use-ac-jedi-backend)
-(setq ein:use-auto-complete-superpack t)
+;; (setq ein:completion-backend 'ein:use-ac-jedi-backend)
+;; strange super autocompletion which kinda not works. 
+;; (setq ein:use-auto-complete-superpack t)
 
 ;; C++
 ;; --------------------------
@@ -157,7 +163,7 @@
  '(flycheck-googlelint-verbose "0")
  '(package-selected-packages
    (quote
-    (jedi-core virtualenv multiple-cursors smartparens rtags py-autopep8 material-theme jedi google-c-style flycheck elpy ein doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
+    (benchmark-init jedi-core virtualenv multiple-cursors smartparens rtags py-autopep8 material-theme jedi google-c-style flycheck elpy doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
 (require 'flycheck)
 (eval-after-load 'flycheck
   '(progn
@@ -261,3 +267,5 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(setq gc-cons-threshold 800000)
