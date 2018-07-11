@@ -2,19 +2,19 @@
 ;; INSTALL PACKAGES
 ;; --------------------------------------
 
+
+
+;; nothing in there !
 ;; (add-to-list 'load-path "~/.emacs.d/elisp")
 (require 'package)
-
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.org/packages/") t)
 
+
+(setq gc-cons-threshold 100000000)
 (package-initialize)
 ;; (when (not package-archive-contents)
 ;;   (package-refresh-contents))
-
-
-(require 'benchmark-init)
-(add-hook 'after-init-hook 'benchmark-init/deactivate)
 
 ;; (defvar myPackages
 ;;   '(better-defaults
@@ -24,10 +24,16 @@
 ;;     py-autopep8
 ;;     company))
 
-;; (mapc #'(lambda (package)		
+
+;; (mapc #'(lambda (package)
 ;; 	  (unless (package-installed-p package)
 ;; 	    (package-install package)))
 ;;       myPackages)
+
+;; emacs benchmark
+(require 'benchmark-init)
+(add-hook 'after-init-hook 'benchmark-init/deactivate)
+>>>>>>> 87d7abecb40f76948d8f458f0f6557a42a126434
 
 ;; BASIC CUSTOMIZATION
 ;; --------------------------------------
@@ -41,7 +47,6 @@
 (global-linum-mode t) ;; enable line numbers globally
 (tool-bar-mode -1) ;;disable toolbar
 (menu-bar-mode -1) ;;disable menu bar
-
 
 ;; flyspell
 ;; --------------------------
@@ -66,6 +71,7 @@
 ;; yasnippet
 ;; ------------------------------------
 (require 'yasnippet)
+(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
 (yas-reload-all)
 (add-hook 'prog-mode-hook #'yas-minor-mode)
 (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
@@ -98,6 +104,14 @@
 (global-set-key (kbd "C->") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 
+;; Python ROOT
+(setenv "ROOTSYS" "/usr/local/root")
+(setenv "PYTHONDIR" "/usr/local/root:$PYTONDIR")
+(setenv "PYTHONPATH" "/usr/local/root/lib::/usr/local/root/bindings/pyroot:$PYTHONPATH")
+;; (setenv "PATH" "/usr/local/root/bin")
+(setenv "LD_LIBRARY_PATH"
+	"/usr/local/root/lib:/usr/local/root/lib:/usr/local/root/bindings/pyroot:$LD_LIBRARY_PATH")
+
 ;; PYTHON-ELPY
 ;; ---------------------------------------
 (add-hook 'python-mode-hook (lambda() (flyspell-prog-mode))) ;; flyspell for mi baad inglisch
@@ -118,7 +132,8 @@
 (global-set-key (kbd "M-,") 'pop-tag-mark) ;; go to last place where M-. was used (go-to-definition)
 
 
-;; IPython and Jupyter (makes the startup really slow :( )
+
+;; IPython and Jupyter ( makes emacs startup quite slow :( )
 ;; -------------------------
 ;; (require 'ein-connect)
 ;; (global-set-key (kbd "C-c C-n l") 'ein:notebooklist-login)
@@ -153,7 +168,7 @@
  '(flycheck-googlelint-verbose "0")
  '(package-selected-packages
    (quote
-    (benchmark-init multiple-cursors smartparens rtags py-autopep8 material-theme jedi google-c-style flycheck elpy doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
+    (benchmark-init jedi-core virtualenv multiple-cursors smartparens rtags py-autopep8 material-theme jedi google-c-style flycheck elpy doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
 (require 'flycheck)
 (eval-after-load 'flycheck
   '(progn
@@ -257,3 +272,5 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+(setq gc-cons-threshold 800000)
