@@ -33,7 +33,6 @@
 ;; emacs benchmark
 (require 'benchmark-init)
 (add-hook 'after-init-hook 'benchmark-init/deactivate)
->>>>>>> 87d7abecb40f76948d8f458f0f6557a42a126434
 
 ;; BASIC CUSTOMIZATION
 ;; --------------------------------------
