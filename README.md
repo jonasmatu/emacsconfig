@@ -1,3 +1,3 @@
 # emacsconfig
 
-Emacs init.el file.
+My emacs configuration for Python, C++ and LaTeX. 
