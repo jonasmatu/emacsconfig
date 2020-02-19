@@ -2,8 +2,6 @@
 ;; INSTALL PACKAGES
 ;; --------------------------------------
 
-
-
 ;; nothing in there !
 ;; (add-to-list 'load-path "~/.emacs.d/elisp")
 (require 'package)
@@ -16,36 +14,44 @@
 ;; (when (not package-archive-contents)
 ;;   (package-refresh-contents))
 
-;; (defvar myPackages
-;;   '(better-defaults
-;;     elpy
-;;     flycheck
-;;     material-theme
-;;     py-autopep8
-;;     company))
+(defvar myPackages
+  '(better-defaults
+    atom-one-dark-theme
+    elpy
+    flycheck
+    material-theme
+    py-autopep8
+    company
+    doom-themes
+    ivy
+    auctex
+    multiple-cursors
+    smartparens
+    company-auctex))
 
-
-;; (mapc #'(lambda (package)
-;; 	  (unless (package-installed-p package)
-;; 	    (package-install package)))
-;;       myPackages)
+(mapc #'(lambda (package)
+	  (unless (package-installed-p package)
+	    (package-install package)))
+      myPackages)
 
 ;; emacs benchmark
-(require 'benchmark-init)
-(add-hook 'after-init-hook 'benchmark-init/deactivate)
+;; (require 'benchmark-init)
+;; (add-hook 'after-init-hook 'benchmark-init/deactivate)
 
 ;; BASIC CUSTOMIZATION
 ;; --------------------------------------
-(require 'doom-themes)
-(load-theme 'doom-one t)
-(defalias 'yes-or-no-p 'y-or-n-p)
-;; (load-theme 'material t) ;; theme
-(setq inhibit-startup-message t) ;; hide the startup message
 ;;(load-theme 'material t) ;; load material theme
-(load-theme 'doom-one t)
+(load-theme 'atom-one-dark t)
+(defalias 'yes-or-no-p 'y-or-n-p)
+(setq inhibit-startup-message t) ;; hide the startup message
 (global-linum-mode t) ;; enable line numbers globally
 (tool-bar-mode -1) ;;disable toolbar
 (menu-bar-mode -1) ;;disable menu bar
+(scroll-bar-mode -1) ;; disable scroll bar
+(global-set-key (kbd "C-c C-f") 'ff-find-other-file)
+;; (setq backup-directory-alist `(("." . ,(expand-file-name
+;;                                     (concat dotfiles-dir "saves")))))
+
 
 ;; flyspell
 ;; --------------------------
@@ -72,8 +78,7 @@
 (require 'yasnippet)
 (setq yas-snippet-dirs '("~/.emacs.d/snippets"))
 (yas-reload-all)
-(add-hook 'prog-mode-hook #'yas-minor-mode)
-(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+(add-hook 'c++-mode-hook #'yas-minor-mode)
 (yas-global-mode 1)
 
 
@@ -114,6 +119,9 @@
 ;; PYTHON-ELPY
 ;; ---------------------------------------
 (add-hook 'python-mode-hook (lambda() (flyspell-prog-mode))) ;; flyspell for mi baad inglisch
+;; (add-hook 'python-mode-hook (lambda() (setq indent-tabs-mode t)
+;; 			      (setq tab-width 4)
+;; 			      (setq python-indent-offset 4)))
 (require 'elpy)
 (elpy-enable)
 (setq elpy-rpc-python-command "python3") ;;use python3
@@ -125,12 +133,14 @@
   (add-hook 'elpy-mode-hook 'flycheck-mode))
 (require 'py-autopep8)
 (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+(setq flycheck-flake8-maximum-line-length 100)
 
 (global-set-key (kbd "M-n") 'elpy-nav-forward-block)   ;;move bock down
 (global-set-key (kbd "M-p") 'elpy-nav-backward-block)  ;;move bock up
 (global-set-key (kbd "M-,") 'pop-tag-mark) ;; go to last place where M-. was used (go-to-definition)
 
-
+;; conda
+(setenv "WORKON_HOME" "/home/jonas/.miniconda3/envs")
 
 ;; IPython and Jupyter ( makes emacs startup quite slow :( )
 ;; -------------------------
@@ -139,22 +149,23 @@
 ;; (global-set-key (kbd "C-c C-n o") 'ein:notebooklist-open)
 
 ;; (setq ein:completion-backend 'ein:use-ac-jedi-backend)
+;; ;; strange super autocompletion which kinda not works. 
 ;; (setq ein:use-auto-complete-superpack t)
 
 ;; C++
 ;; --------------------------
-(add-hook 'c-mode-common-hook (lambda() (flyspell-prog-mode))) ;; flyspell for mi baad inglisch
-(add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+;; (add-hook 'c-mode-common-hook (lambda() (flyspell-prog-mode))) ;; flyspell for mi baad inglisch
+;; (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
-(setq c-default-style "linux"
-      c-basic-offset 2
-	  tab-width 2
-	  indent-tabs-mode t)
-;;(modern-c++-font-lock-global-mode t)
-;; flycheck and goolge's cpplint checkstyle
+;; (setq c-default-style "linux"
+;;       c-basic-offset 2
+;; 	  tab-width 2
+;; 	  indent-tabs-mode t)
+;; ;;(modern-c++-font-lock-global-mode t)
+;; ;; flycheck and goolge's cpplint checkstyle
 
-(add-hook 'c-mode-common-hook 'google-set-c-style)
-(add-hook 'c-mode-common-hook 'google-make-newline-indent)
+;; (add-hook 'c-mode-common-hook 'google-set-c-style)
+;; (add-hook 'c-mode-common-hook 'google-make-newline-indent)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -167,7 +178,7 @@
  '(flycheck-googlelint-verbose "0")
  '(package-selected-packages
    (quote
-    (benchmark-init jedi-core virtualenv multiple-cursors smartparens rtags py-autopep8 material-theme jedi google-c-style flycheck elpy doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
+    (flycheck-julia julia-mode atom-one-dark-theme docker ein benchmark-init jedi-core virtualenv multiple-cursors smartparens rtags py-autopep8 material-theme jedi google-c-style flycheck elpy doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
 (require 'flycheck)
 (eval-after-load 'flycheck
   '(progn
@@ -175,56 +186,55 @@
      (flycheck-add-next-checker 'c/c++-clang
 				'(warning . c/c++-googlelint))))
 
-(add-hook 'c++-mode-hook
-	  (lambda () (setq flycheck-clang-language-standard "c++11")))
-(add-hook 'c++-mode-hook 'flycheck-mode)
-(add-hook 'c-mode-hook 'flycheck-mode)
-;; rtags for references and shit
-(add-hook 'c-mode-hook 'rtags-start-process-unless-running)
-(add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
+;; (add-hook 'c++-mode-hook
+;; 	  (lambda () (setq flycheck-clang-language-standard "c++11")))
+;; (add-hook 'c++-mode-hook 'flycheck-mode)
+;; (add-hook 'c-mode-hook 'flycheck-mode)
+;; ;; rtags for references and shit
+;; (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
+;; (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
 
-(defun my-goto-symbol ()
-  (interactive)
-  (deactivate-mark)
-  (ring-insert find-tag-marker-ring (point-marker))
-  (or (and (require 'rtags nil t)
-	   (rtags-find-symbol-at-point))))
+;; (defun my-goto-symbol ()
+;;   (interactive)
+;;   (deactivate-mark)
+;;   (ring-insert find-tag-marker-ring (point-marker))
+;;   (or (and (require 'rtags nil t)
+;; 	   (rtags-find-symbol-at-point))))
 
-(rtags-enable-standard-keybindings)
+;; (rtags-enable-standard-keybindings)
 
-(define-key global-map (kbd "C-c f") 'rtags-find-file)
+;; (define-key global-map (kbd "C-c f") 'rtags-find-file)
 
-(define-key c-mode-base-map (kbd "M-.") 'my-goto-symbol)
-(define-key c-mode-base-map (kbd "M-,") 'pop-tag-mark)
-
+;; (define-key c-mode-base-map (kbd "M-.") 'my-goto-symbol)
+;; (define-key c-mode-base-map (kbd "M-,") 'pop-tag-mark)
 
 ;; cmake-ide
-(require 'cmake-ide)
-(cmake-ide-setup)
-(setq cmake-ide-flags-c++ (append '("std=c++11")))
-(global-set-key (kbd "C-c m") 'cmake-ide-compile)
+;; (require 'cmake-ide)
+;; (cmake-ide-setup)
+;; (setq cmake-ide-flags-c++ (append '("std=c++11")))
+;; (global-set-key (kbd "C-c m") 'cmake-ide-compile)
 
 
 
 ;; irony for completion
-(require 'irony)
-(require 'company-irony-c-headers)
-(add-hook 'c-mode-hook 'irony-mode)
-(add-hook 'c++-mode-hook 'irony-mode)
+;; (require 'irony)
+;; (require 'company-irony-c-headers)
+;; (add-hook 'c-mode-hook 'irony-mode)
+;; (add-hook 'c++-mode-hook 'irony-mode)
 
-(defun my-irony-mode-hook ()
-  (define-key irony-mode-map
-    [remap completion-at-point] 'irony-completion-at-point)
-  (define-key irony-mode-map
-    [remap complete-symbol] 'irony-completion-at-point))
-(add-hook 'irony-mode-hook 'my-irony-mode-hook)
-(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+;; (defun my-irony-mode-hook ()
+;;   (define-key irony-mode-map
+;;     [remap completion-at-point] 'irony-completion-at-point)
+;;   (define-key irony-mode-map
+;;     [remap complete-symbol] 'irony-completion-at-point))
+;; (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+;; (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
 
 
-(add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
-(eval-after-load 'company '(add-to-list 'company-backends '(company-irony-c-headers
-							    company-irony ;; company-yasnippet
-							    company-clang)))
+;; (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
+;; (eval-after-load 'company '(add-to-list 'company-backends '(company-irony-c-headers
+;; 							    company-irony ;; company-yasnippet
+;; 							    company-clang)))
 
 ;; Add yasnippet support for all company backends
 ;; https://github.com/syl20bnr/spacemacs/pull/179
@@ -244,6 +254,11 @@
 (add-hook 'LaTeX-mode-hook 'flyspell-mode)
 (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
 
+(defun german-dict ()
+  (ispell-change-dictionary 'german))
+
+;; (add-hook 'LaTeX-mode-hook 'german-dict)
+
 (load "auctex.el" nil t t)
 
 (setq TeX-auto-save t)
@@ -251,6 +266,37 @@
 (setq TeX-save-query nil)
 
 (setq TeX-PDF-mode t)
+
+
+(require 'tex-site)
+(autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
+(autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
+(autoload 'reftex-citation "reftex-cite" "Make citation" nil)
+(autoload 'reftex-index-phrase-mode "reftex-index" "Phrase Mode" t)
+(add-hook 'latex-mode-hook 'turn-on-reftex) ; with Emacs latex mode
+;; (add-hook 'reftex-load-hook 'imenu-add-menubar-index)
+(add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+
+(setq LaTeX-eqnarray-label "eq"
+LaTeX-equation-label "eq"
+LaTeX-figure-label "fig"
+LaTeX-table-label "tab"
+LaTeX-myChapter-label "chap"
+TeX-auto-save t
+TeX-newline-function 'reindent-then-newline-and-indent
+TeX-parse-self t
+;; TeX-style-path
+;; '("style/" "auto/"
+;; "/usr/share/emacs21/site-lisp/auctex/style/"
+;; "/var/lib/auctex/emacs21/"
+;; "/usr/local/share/emacs/site-lisp/auctex/style/")
+LaTeX-section-hook
+'(LaTeX-section-heading
+LaTeX-section-title
+LaTeX-section-toc
+LaTeX-section-section
+LaTeX-section-label))
+
 
 ;; Make okular work
 (setq TeX-source-correlate-mode t
