@@ -49,6 +49,7 @@
 (menu-bar-mode -1) ;;disable menu bar
 (scroll-bar-mode -1) ;; disable scroll bar
 (global-set-key (kbd "C-c C-f") 'ff-find-other-file)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
 ;; (setq backup-directory-alist `(("." . ,(expand-file-name
 ;;                                     (concat dotfiles-dir "saves")))))
 
@@ -109,12 +110,17 @@
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 
 ;; Python ROOT
-(setenv "ROOTSYS" "/usr/local/root")
-(setenv "PYTHONDIR" "/usr/local/root:$PYTONDIR")
-(setenv "PYTHONPATH" "/usr/local/root/lib::/usr/local/root/bindings/pyroot:$PYTHONPATH")
-;; (setenv "PATH" "/usr/local/root/bin")
-(setenv "LD_LIBRARY_PATH"
-	"/usr/local/root/lib:/usr/local/root/lib:/usr/local/root/bindings/pyroot:$LD_LIBRARY_PATH")
+;; (setenv "ROOTSYS" "/usr/local/root")
+;; (setenv "PYTHONDIR" "/usr/local/root:$PYTONDIR")
+;; (setenv "PYTHONPATH" "/usr/local/root/lib::/usr/local/root/bindings/pyroot:$PYTHONPATH")
+;; ;; (setenv "PATH" "/usr/local/root/bin")
+;; (setenv "LD_LIBRARY_PATH"
+;; 	"/usr/local/root/lib:/usr/local/root/lib:/usr/local/root/bindings/pyroot:$LD_LIBRARY_PATH")
+
+
+;; JULIA
+(require 'julia-mode)
+
 
 ;; PYTHON-ELPY
 ;; ---------------------------------------
