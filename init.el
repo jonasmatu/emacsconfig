@@ -23,6 +23,7 @@
     py-autopep8
     company
     doom-themes
+    lsp-julia
     ivy
     auctex
     multiple-cursors
@@ -119,7 +120,13 @@
 
 
 ;; JULIA
+;; (quelpa '(lsp-julia :fetcher github
+;;                     :repo "non-Jedi/lsp-julia"
+;;                     :files (:defaults "languageserver")))
+(require 'lsp-julia)
+(setq lsp-julia-package-dir nil)
 (require 'julia-mode)
+(add-hook 'julia-mode-hook #'lsp-mode)
 
 
 ;; PYTHON-ELPY
@@ -178,13 +185,14 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(eglot-connect-timeout 600)
  '(flycheck-c/c++googlelint-executable "/usr/local/bin/cpplint.py")
  '(flycheck-googlelint-linelength "80")
  '(flycheck-googlelint-root ".")
  '(flycheck-googlelint-verbose "0")
  '(package-selected-packages
    (quote
-    (flycheck-julia julia-mode atom-one-dark-theme docker ein benchmark-init jedi-core virtualenv multiple-cursors smartparens rtags py-autopep8 material-theme jedi google-c-style flycheck elpy doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
+    (color-theme-sanityinc-tomorrow lsp-mode flycheck-julia julia-mode atom-one-dark-theme docker ein benchmark-init jedi-core virtualenv multiple-cursors smartparens rtags py-autopep8 material-theme jedi google-c-style flycheck elpy doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
 (require 'flycheck)
 (eval-after-load 'flycheck
   '(progn
@@ -302,6 +310,61 @@ LaTeX-section-title
 LaTeX-section-toc
 LaTeX-section-section
 LaTeX-section-label))
+
+
+;; Fix latex item indent
+(defun LaTeX-indent-item ()
+  "Provide proper indentation for LaTeX \"itemize\",\"enumerate\", and
+\"description\" environments.
+
+  \"\\item\" is indented `LaTeX-indent-level' spaces relative to
+  the the beginning of the environment.
+
+  Continuation lines are indented either twice
+  `LaTeX-indent-level', or `LaTeX-indent-level-item-continuation'
+  if the latter is bound."
+  (save-match-data
+    (let* ((offset LaTeX-indent-level)
+           (contin (or (and (boundp 'LaTeX-indent-level-item-continuation)
+                            LaTeX-indent-level-item-continuation)
+                       (* 2 LaTeX-indent-level)))
+           (re-beg "\\\\begin{")
+           (re-end "\\\\end{")
+           (re-env "\\(itemize\\|\\enumerate\\|description\\)")
+           (indent (save-excursion
+                     (when (looking-at (concat re-beg re-env "}"))
+                       (end-of-line))
+                     (LaTeX-find-matching-begin)
+                     (current-column))))
+      (cond ((looking-at (concat re-beg re-env "}"))
+             (or (save-excursion
+                   (beginning-of-line)
+                   (ignore-errors
+                     (LaTeX-find-matching-begin)
+                     (+ (current-column)
+                        (if (looking-at (concat re-beg re-env "}"))
+                            contin
+                          offset))))
+                 indent))
+             ((looking-at (concat re-end re-env "}"))
+              indent)
+            ((looking-at "\\\\item")
+             (+ offset indent))
+            (t
+             (+ contin indent))))))
+
+(defcustom LaTeX-indent-level-item-continuation 4
+  "*Indentation of continuation lines for items in itemize-like
+environments."
+  :group 'LaTeX-indentation
+  :type 'integer)
+
+(eval-after-load "latex"
+  '(setq LaTeX-indent-environment-list
+         (nconc '(("itemize" LaTeX-indent-item)
+                  ("enumerate" LaTeX-indent-item)
+                  ("description" LaTeX-indent-item))
+                LaTeX-indent-environment-list)))
 
 
 ;; Make okular work
