@@ -2,8 +2,6 @@
 ;; INSTALL PACKAGES
 ;; --------------------------------------
 
-;; nothing in there !
-;; (add-to-list 'load-path "~/.emacs.d/elisp")
 (require 'package)
 (add-to-list 'package-archives
 	     '("melpa" . "http://melpa.org/packages/") t)
@@ -22,7 +20,6 @@
     material-theme
     py-autopep8
     company
-    doom-themes
     lsp-julia
     ivy
     auctex
@@ -35,14 +32,12 @@
 	    (package-install package)))
       myPackages)
 
-;; emacs benchmark
-;; (require 'benchmark-init)
-;; (add-hook 'after-init-hook 'benchmark-init/deactivate)
 
 ;; BASIC CUSTOMIZATION
 ;; --------------------------------------
-;;(load-theme 'material t) ;; load material theme
-(load-theme 'atom-one-dark t)
+;; (load-theme 'atom-one-dark t)
+;; (require 'color-theme-sanityinc-tomorrow)
+;; (load-theme 'sanityinc-tomorrow-eighties t)
 (defalias 'yes-or-no-p 'y-or-n-p)
 (setq inhibit-startup-message t) ;; hide the startup message
 (global-linum-mode t) ;; enable line numbers globally
@@ -61,10 +56,11 @@
 (defun fd-switch-dictionary()
       (interactive)
       (let* ((dic ispell-current-dictionary)
-    	 (change (if (string= dic "deutsch8") "english" "deutsch8")))
+    	 (change (if (string= dic "deutsch8") "british" "deutsch8")))
         (ispell-change-dictionary change)
         (message "Dictionary switched from %s to %s" dic change)
         ))
+
 
 
 ;; for smart parenthesis 
@@ -72,7 +68,7 @@
 (show-smartparens-global-mode +1)
 (smartparens-global-mode 1)
 
-;;ivy mode(minibuffer)
+;; ivy mode
 (ivy-mode 1)
 
 ;; yasnippet
@@ -120,9 +116,6 @@
 
 
 ;; JULIA
-;; (quelpa '(lsp-julia :fetcher github
-;;                     :repo "non-Jedi/lsp-julia"
-;;                     :files (:defaults "languageserver")))
 (require 'lsp-julia)
 (setq lsp-julia-package-dir nil)
 (require 'julia-mode)
@@ -131,7 +124,7 @@
 
 ;; PYTHON-ELPY
 ;; ---------------------------------------
-(add-hook 'python-mode-hook (lambda() (flyspell-prog-mode))) ;; flyspell for mi baad inglisch
+(add-hook 'python-mode-hook (lambda() (flyspell-prog-mode)))
 ;; (add-hook 'python-mode-hook (lambda() (setq indent-tabs-mode t)
 ;; 			      (setq tab-width 4)
 ;; 			      (setq python-indent-offset 4)))
@@ -155,19 +148,10 @@
 ;; conda
 (setenv "WORKON_HOME" "/home/jonas/.miniconda3/envs")
 
-;; IPython and Jupyter ( makes emacs startup quite slow :( )
-;; -------------------------
-;; (require 'ein-connect)
-;; (global-set-key (kbd "C-c C-n l") 'ein:notebooklist-login)
-;; (global-set-key (kbd "C-c C-n o") 'ein:notebooklist-open)
-
-;; (setq ein:completion-backend 'ein:use-ac-jedi-backend)
-;; ;; strange super autocompletion which kinda not works. 
-;; (setq ein:use-auto-complete-superpack t)
 
 ;; C++
 ;; --------------------------
-;; (add-hook 'c-mode-common-hook (lambda() (flyspell-prog-mode))) ;; flyspell for mi baad inglisch
+;; (add-hook 'c-mode-common-hook (lambda() (flyspell-prog-mode)))
 ;; (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 
 ;; (setq c-default-style "linux"
@@ -185,14 +169,57 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ansi-color-faces-vector
+   [default bold shadow italic underline bold bold-italic bold])
+ '(ansi-color-names-vector
+   (vector "#1d1f21" "#cc6666" "#b5bd68" "#f0c674" "#81a2be" "#b294bb" "#8abeb7" "#c5c8c6"))
+ '(beacon-color "#cc6666")
+ '(custom-enabled-themes (quote (tango-dark)))
+ '(custom-safe-themes
+   (quote
+    ("1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "3380a2766cf0590d50d6366c5a91e976bdc3c413df963a0ab9952314b4577299" "8c1dd3d6fdfb2bee6b8f05d13d167f200befe1712d0abfdc47bb6d3b706c3434" "669e02142a56f63861288cc585bee81643ded48a19e36bfdf02b66d745bcc626" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" default)))
  '(eglot-connect-timeout 600)
+ '(fci-rule-color "#373b41")
  '(flycheck-c/c++googlelint-executable "/usr/local/bin/cpplint.py")
+ '(flycheck-color-mode-line-face-to-color (quote mode-line-buffer-id))
  '(flycheck-googlelint-linelength "80")
  '(flycheck-googlelint-root ".")
  '(flycheck-googlelint-verbose "0")
+ '(frame-background-mode (quote dark))
  '(package-selected-packages
    (quote
-    (color-theme-sanityinc-tomorrow lsp-mode flycheck-julia julia-mode atom-one-dark-theme docker ein benchmark-init jedi-core virtualenv multiple-cursors smartparens rtags py-autopep8 material-theme jedi google-c-style flycheck elpy doom-themes company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults))))
+    (color-theme-sanityinc-tomorrow lsp-mode flycheck-julia julia-mode atom-one-dark-theme docker ein benchmark-init jedi-core virtualenv multiple-cursors smartparens rtags py-autopep8 material-theme jedi google-c-style flycheck elpy company-math company-irony-c-headers company-irony company-auctex cmake-mode cmake-ide better-defaults)))
+ '(tetris-x-colors
+   [[229 192 123]
+    [97 175 239]
+    [209 154 102]
+    [224 108 117]
+    [152 195 121]
+    [198 120 221]
+    [86 182 194]])
+ '(vc-annotate-background nil)
+ '(vc-annotate-color-map
+   (quote
+    ((20 . "#cc6666")
+     (40 . "#de935f")
+     (60 . "#f0c674")
+     (80 . "#b5bd68")
+     (100 . "#8abeb7")
+     (120 . "#81a2be")
+     (140 . "#b294bb")
+     (160 . "#cc6666")
+     (180 . "#de935f")
+     (200 . "#f0c674")
+     (220 . "#b5bd68")
+     (240 . "#8abeb7")
+     (260 . "#81a2be")
+     (280 . "#b294bb")
+     (300 . "#cc6666")
+     (320 . "#de935f")
+     (340 . "#f0c674")
+     (360 . "#b5bd68"))))
+ '(vc-annotate-very-old-color nil)
+ '(window-divider-mode nil))
 (require 'flycheck)
 (eval-after-load 'flycheck
   '(progn
@@ -268,10 +295,6 @@
 (add-hook 'LaTeX-mode-hook 'flyspell-mode)
 (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
 
-(defun german-dict ()
-  (ispell-change-dictionary 'german))
-
-;; (add-hook 'LaTeX-mode-hook 'german-dict)
 
 (load "auctex.el" nil t t)
 
