@@ -117,16 +117,17 @@
       (smartparens-global-mode 1))
   #+END_SRC
 
-
 * yasnippet
-#+BEGIN_SRC emacs-lisp
-(require 'yasnippet)
-(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
-(yas-reload-all)
-(add-hook 'c++-mode-hook #'yas-minor-mode)
-(yas-global-mode 1)
-#+END_SRC
-
+  #+BEGIN_SRC emacs-lisp
+    (use-package yasnippet
+      :ensure t
+      :config
+      (progn
+	(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+	(yas-reload-all)
+	(add-hook 'c++-mode-hook #'yas-minor-mode)
+	(yas-global-mode 1)))
+  #+END_SRC
 * Python 
   #+BEGIN_SRC emacs-lisp
     (use-package py-autopep8
@@ -154,7 +155,6 @@
     ;; conda
     ;; (setenv "WORKON_HOME" "/home/jonas/.miniconda3/envs")
   #+END_SRC
-
 
 * Julia
 
