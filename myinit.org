@@ -1,15 +1,16 @@
 #+STARTUP overview
 * interface tweaks
  #+BEGIN_SRC emacs-lisp
-   (load-theme 'atom-one-dark t)
-   (defalias 'yes-or-no-p 'y-or-n-p)
-   (defalias 'list-buffers 'ibuffer-other-window)
-   (setq inhibit-startup-message t) ;; hide the startup message
-   (global-linum-mode t) ;; enable line numbers globally
-   (tool-bar-mode -1) ;;disable toolbar
-   (menu-bar-mode -1) ;;disable menu bar
-   (scroll-bar-mode -1) ;; disable scroll bar
-   (global-set-key (kbd "<f5>") 'revert-buffer)
+      (load-theme 'atom-one-dark t)
+      (defalias 'yes-or-no-p 'y-or-n-p)
+      (defalias 'list-buffers 'ibuffer-other-window)
+      (setq inhibit-startup-message t) ;; hide the startup message
+      (global-linum-mode t) ;; enable line numbers globally
+      (tool-bar-mode -1) ;;disable toolbar
+      (menu-bar-mode -1) ;;disable menu bar
+      (scroll-bar-mode -1) ;; disable scroll bar
+      (global-set-key (kbd "<f5>") 'revert-buffer)
+      (global-set-key (kbd "M-,") 'pop-tag-mark) ;; go to last place where M-. was used (go-to-definition)
  #+END_SRC
 * try
 #+BEGIN_SRC emacs-lisp
@@ -82,14 +83,29 @@
 
 * flycheck
   #+BEGIN_SRC emacs-lisp
+    (use-package flycheck-google-cpplint
+      :ensure t)
     (use-package flycheck
       :ensure t
       :init
-      (global-flycheck-mode t))
+      (global-flycheck-mode t)
+      :config
+      (flycheck-add-next-checker 'c/c++-clang '(warning . c/c++-googlelint)))
+  #+END_SRC
+
+* smart parenthesis
+  #+BEGIN_SRC emacs-lisp
+    (use-package smartparens
+      :ensure t
+      :config
+      (show-smartparens-global-mode 1)
+      (smartparens-global-mode 1))
   #+END_SRC
 
 * Python 
   #+BEGIN_SRC emacs-lisp
+    (use-package py-autopep8
+      :ensure t)
     (use-package elpy
       :ensure t
       :config
@@ -100,25 +116,39 @@
 	(setq elpy-shell-echo-input nil)
 	(setq python-shell-completion-native-enable nil)
 	(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+	(global-set-key (kbd "M-n") 'elpy-nav-forward-block)   ;;move bock down
+	(global-set-key (kbd "M-p") 'elpy-nav-backward-block)  ;;move bock up
+	(setq flycheck-flake8-maximum-line-length 100)
+        (add-hook 'elpy-mode-hook 'flycheck-mode)
 	))
 
     (add-hook 'python-mode-hook (lambda() (flyspell-prog-mode))) ;; flyspell for mi baad inglisch
 
     (when (require 'flycheck nil t)
-      (setq elpy-modules(delq 'elpy-module-flymake elpy-modules))
-      (add-hook 'elpy-mode-hook 'flycheck-mode))
-    (require 'py-autopep8)
-    (setq flycheck-flake8-maximum-line-length 100)
-
-    (global-set-key (kbd "M-n") 'elpy-nav-forward-block)   ;;move bock down
-    (global-set-key (kbd "M-p") 'elpy-nav-backward-block)  ;;move bock up
-    (global-set-key (kbd "M-,") 'pop-tag-mark) ;; go to last place where M-. was used (go-to-definition)
-
+      (setq elpy-modules(delq 'elpy-module-flymake elpy-modules)))
     ;; conda
-    (setenv "WORKON_HOME" "/home/jonas/.miniconda3/envs")
-
+    ;; (setenv "WORKON_HOME" "/home/jonas/.miniconda3/envs")
   #+END_SRC
 
+
+* Julia
+#+BEGIN_SRC emacs-lisp
+  (use-package lsp-mode
+    :ensure t)
+  (use-package lsp-julia
+    :ensure t
+    :config
+    (progn
+      (setq lsp-julia-default-environment "~/.julia/environments/v1.4")
+      (setq lsp-julia-package-dir nil)))
+
+  (use-package julia-mode
+    :ensure t
+    :config
+    (progn
+      (add-hook 'julia-mode-hook #'lsp-mode)
+      (add-hook 'julia-mode-hook #'lsp)))
+#+END_SRC
 
 * the rest
 #+BEGIN_SRC emacs-lisp
@@ -128,31 +158,6 @@
   (global-set-key (kbd "C->") 'mc/mark-next-like-this)
   (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 
-
-  ;; JULIA
-  (require 'julia-mode)
-  (require 'lsp-julia)
-  (require 'lsp-mode)
-  (setq lsp-julia-default-environment "~/.julia/environments/v1.4")
-  (setq lsp-julia-package-dir nil)
-  (add-hook 'julia-mode-hook #'lsp-mode)
-  (add-hook 'julia-mode-hook #'lsp)
-
-  ;; multiple-cursors
-  ;; --------------------------------------
-  (require 'multiple-cursors)
-  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
-  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
-
-
-  ;; JULIA
-  (require 'julia-mode)
-  (require 'lsp-julia)
-  (require 'lsp-mode)
-  (setq lsp-julia-default-environment "~/.julia/environments/v1.4")
-  (setq lsp-julia-package-dir nil)
-  (add-hook 'julia-mode-hook #'lsp-mode)
-  (add-hook 'julia-mode-hook #'lsp)
 
   ;; C++
   ;; --------------------------
@@ -168,14 +173,6 @@
 
   ;; (add-hook 'c-mode-common-hook 'google-set-c-style)
   ;; (add-hook 'c-mode-common-hook 'google-make-newline-indent)
-
-
-  (require 'flycheck)
-  (eval-after-load 'flycheck
-    '(progn
-       (require 'flycheck-google-cpplint)
-       (flycheck-add-next-checker 'c/c++-clang
-				  '(warning . c/c++-googlelint))))
 
   ;; (add-hook 'c++-mode-hook
   ;; 	  (lambda () (setq flycheck-clang-language-standard "c++11")))
