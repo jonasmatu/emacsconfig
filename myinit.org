@@ -1,0 +1,306 @@
+#+STARTUP overview
+* interface tweaks
+ #+BEGIN_SRC emacs-lisp
+   (load-theme 'atom-one-dark t)
+   (defalias 'yes-or-no-p 'y-or-n-p)
+   (defalias 'list-buffers 'ibuffer-other-window)
+   (setq inhibit-startup-message t) ;; hide the startup message
+   (global-linum-mode t) ;; enable line numbers globally
+   (tool-bar-mode -1) ;;disable toolbar
+   (menu-bar-mode -1) ;;disable menu bar
+   (scroll-bar-mode -1) ;; disable scroll bar
+   (global-set-key (kbd "<f5>") 'revert-buffer)
+ #+END_SRC
+* try
+#+BEGIN_SRC emacs-lisp
+  (use-package try
+    :ensure t)
+#+END_SRC
+
+* which 
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :ensure t
+    :config (which-key-mode)) 
+#+END_SRC
+
+* Org mode 
+  #+BEGIN_SRC emacs-lisp
+  (use-package org-bullets
+    :ensure t
+    :config
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+    (setq org-src-tab-acts-natively t))
+  #+END_SRC
+
+* swiper /counsil /ivy
+#+BEGIN_SRC emacs-lisp
+  (use-package ivy
+    :ensure t
+    :diminish (ivy-mode)
+    :bind (("C-x b" . ivy-switch-buffer))
+    :config
+    (ivy-mode 1)
+    (setq ivy-use-virtual-buffers t)
+    (setq ivy-display-style 'fancy))
+  (use-package counsel
+    :ensure t)
+  (use-package swiper
+    :ensure t
+    :bind (("C-s" . swiper)
+	   ("C-r" . swiper)
+	   ("C-c C-r" . ivy-resume)
+	   ("M-x" . counsel-M-x)
+	   ("C-x C-f" . counsel-find-file))
+    :config
+    (progn
+      (ivy-mode 1)
+      (setq ivy-use-virtual-buffers t)
+      (setq ivy-display-style 'fancy)
+      (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+      ))
+#+END_SRC
+
+* avy
+#+BEGIN_SRC emacs-lisp
+  (use-package avy
+    :ensure t
+    :bind ("M-s" . avy-goto-char))
+#+END_SRC
+
+* company
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+    :ensure t
+    :config
+    (progn
+      (setq company-dabbrev-downcase 0)
+      (setq company-idle-delay 0)
+      (setq company-require-match nil)
+      (add-hook 'after-init-hook 'global-company-mode)))
+#+END_SRC
+
+* flycheck
+  #+BEGIN_SRC emacs-lisp
+    (use-package flycheck
+      :ensure t
+      :init
+      (global-flycheck-mode t))
+  #+END_SRC
+
+* Python 
+  #+BEGIN_SRC emacs-lisp
+    (use-package elpy
+      :ensure t
+      :config
+      (progn
+	(elpy-enable)
+	(setq elpy-rpc-python-command "python3") ;;use python3
+	(setq python-shell-interpreter "python3");;use python3
+	(setq elpy-shell-echo-input nil)
+	(setq python-shell-completion-native-enable nil)
+	(add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save)
+	))
+
+    (add-hook 'python-mode-hook (lambda() (flyspell-prog-mode))) ;; flyspell for mi baad inglisch
+
+    (when (require 'flycheck nil t)
+      (setq elpy-modules(delq 'elpy-module-flymake elpy-modules))
+      (add-hook 'elpy-mode-hook 'flycheck-mode))
+    (require 'py-autopep8)
+    (setq flycheck-flake8-maximum-line-length 100)
+
+    (global-set-key (kbd "M-n") 'elpy-nav-forward-block)   ;;move bock down
+    (global-set-key (kbd "M-p") 'elpy-nav-backward-block)  ;;move bock up
+    (global-set-key (kbd "M-,") 'pop-tag-mark) ;; go to last place where M-. was used (go-to-definition)
+
+    ;; conda
+    (setenv "WORKON_HOME" "/home/jonas/.miniconda3/envs")
+
+  #+END_SRC
+
+
+* the rest
+#+BEGIN_SRC emacs-lisp
+  ;; multiple-cursors
+  ;; --------------------------------------
+  (require 'multiple-cursors)
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+
+
+  ;; JULIA
+  (require 'julia-mode)
+  (require 'lsp-julia)
+  (require 'lsp-mode)
+  (setq lsp-julia-default-environment "~/.julia/environments/v1.4")
+  (setq lsp-julia-package-dir nil)
+  (add-hook 'julia-mode-hook #'lsp-mode)
+  (add-hook 'julia-mode-hook #'lsp)
+
+  ;; multiple-cursors
+  ;; --------------------------------------
+  (require 'multiple-cursors)
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+
+
+  ;; JULIA
+  (require 'julia-mode)
+  (require 'lsp-julia)
+  (require 'lsp-mode)
+  (setq lsp-julia-default-environment "~/.julia/environments/v1.4")
+  (setq lsp-julia-package-dir nil)
+  (add-hook 'julia-mode-hook #'lsp-mode)
+  (add-hook 'julia-mode-hook #'lsp)
+
+  ;; C++
+  ;; --------------------------
+  ;; (add-hook 'c-mode-common-hook (lambda() (flyspell-prog-mode))) ;; flyspell for mi baad inglisch
+  ;; (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+
+  ;; (setq c-default-style "linux"
+  ;;       c-basic-offset 2
+  ;; 	  tab-width 2
+  ;; 	  indent-tabs-mode t)
+  ;; ;;(modern-c++-font-lock-global-mode t)
+  ;; ;; flycheck and goolge's cpplint checkstyle
+
+  ;; (add-hook 'c-mode-common-hook 'google-set-c-style)
+  ;; (add-hook 'c-mode-common-hook 'google-make-newline-indent)
+
+
+  (require 'flycheck)
+  (eval-after-load 'flycheck
+    '(progn
+       (require 'flycheck-google-cpplint)
+       (flycheck-add-next-checker 'c/c++-clang
+				  '(warning . c/c++-googlelint))))
+
+  ;; (add-hook 'c++-mode-hook
+  ;; 	  (lambda () (setq flycheck-clang-language-standard "c++11")))
+  ;; (add-hook 'c++-mode-hook 'flycheck-mode)
+  ;; (add-hook 'c-mode-hook 'flycheck-mode)
+  ;; ;; rtags for references and shit
+  ;; (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
+  ;; (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
+
+  ;; (defun my-goto-symbol ()
+  ;;   (interactive)
+  ;;   (deactivate-mark)
+  ;;   (ring-insert find-tag-marker-ring (point-marker))
+  ;;   (or (and (require 'rtags nil t)
+  ;; 	   (rtags-find-symbol-at-point))))
+
+  ;; (rtags-enable-standard-keybindings)
+
+  ;; (define-key global-map (kbd "C-c f") 'rtags-find-file)
+
+  ;; (define-key c-mode-base-map (kbd "M-.") 'my-goto-symbol)
+  ;; (define-key c-mode-base-map (kbd "M-,") 'pop-tag-mark)
+
+  ;; cmake-ide
+  ;; (require 'cmake-ide)
+  ;; (cmake-ide-setup)
+  ;; (setq cmake-ide-flags-c++ (append '("std=c++11")))
+  ;; (global-set-key (kbd "C-c m") 'cmake-ide-compile)
+
+
+
+  ;; irony for completion
+  ;; (require 'irony)
+  ;; (require 'company-irony-c-headers)
+  ;; (add-hook 'c-mode-hook 'irony-mode)
+  ;; (add-hook 'c++-mode-hook 'irony-mode)
+
+  ;; (defun my-irony-mode-hook ()
+  ;;   (define-key irony-mode-map
+  ;;     [remap completion-at-point] 'irony-completion-at-point)
+  ;;   (define-key irony-mode-map
+  ;;     [remap complete-symbol] 'irony-completion-at-point))
+  ;; (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+  ;; (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+
+
+  ;; (add-hook 'irony-mode-hook 'company-irony-setup-begin-commands)
+  ;; (eval-after-load 'company '(add-to-list 'company-backends '(company-irony-c-headers
+  ;; 							    company-irony ;; company-yasnippet
+  ;; 							    company-clang)))
+
+  ;; Add yasnippet support for all company backends
+  ;; https://github.com/syl20bnr/spacemacs/pull/179
+  ;; (defvar company-mode/enable-yas t
+  ;;   "Enable yasnippet for all backends.")
+
+  ;; (defun company-mode/backend-with-yas (backend)
+  ;;   (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+  ;;       backend
+  ;;     (append (if (consp backend) backend (list backend))
+  ;;             '(:with company-yasnippet))))
+
+  ;; (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+
+  ;; Latex
+  ;; ---------------------------
+  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+  (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
+
+  (defun german-dict ()
+    (ispell-change-dictionary 'german))
+
+  ;; (add-hook 'LaTeX-mode-hook 'german-dict)
+
+  (load "auctex.el" nil t t)
+
+  (setq TeX-auto-save t)
+  (setq TeX-parse-self t)
+  (setq TeX-save-query nil)
+
+  (setq TeX-PDF-mode t)
+
+
+  (require 'tex-site)
+  (autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
+  (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
+  (autoload 'reftex-citation "reftex-cite" "Make citation" nil)
+  (autoload 'reftex-index-phrase-mode "reftex-index" "Phrase Mode" t)
+  (add-hook 'latex-mode-hook 'turn-on-reftex) ; with Emacs latex mode
+  ;; (add-hook 'reftex-load-hook 'imenu-add-menubar-index)
+  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+
+  (setq LaTeX-eqnarray-label "eq"
+  LaTeX-equation-label "eq"
+  LaTeX-figure-label "fig"
+  LaTeX-table-label "tab"
+  LaTeX-myChapter-label "chap"
+  TeX-auto-save t
+  TeX-newline-function 'reindent-then-newline-and-indent
+  TeX-parse-self t
+  ;; TeX-style-path
+  ;; '("style/" "auto/"
+  ;; "/usr/share/emacs21/site-lisp/auctex/style/"
+  ;; "/var/lib/auctex/emacs21/"
+  ;; "/usr/local/share/emacs/site-lisp/auctex/style/")
+  LaTeX-section-hook
+  '(LaTeX-section-heading
+  LaTeX-section-title
+  LaTeX-section-toc
+  LaTeX-section-section
+  LaTeX-section-label))
+
+
+  ;; Make okular work
+  (setq TeX-source-correlate-mode t
+	TeX-source-correlate-start-server t)
+  (eval-after-load "tex"
+    '(setcar (cdr (assoc 'output-pdf TeX-view-program-selection)) "Okular"))
+
+
+  ;; (company-auctex-init)
+  ;; (setq company-math-disallow-unicode-symbols-in-face nil)
+  ;; (append '((company-math-symbols-latex company-math-symbols-unicode
+  ;;               company-auctex-macros company-auctex-environments))
+  ;;                       company-backends)
+
+#+END_SRC
+
