@@ -12,6 +12,15 @@
    (global-set-key (kbd "<f5>") 'revert-buffer)
    (global-set-key (kbd "M-,") 'pop-tag-mark) ;; go to last place where M-. was used (go-to-definition)
  #+END_SRC
+
+* theme subatomic
+  #+BEGIN_SRC emacs-lisp
+    (use-package subatomic-theme
+      :ensure t
+      :config
+      (setq subatomic-more-visible-comment-delimiters t))
+  #+END_SRC
+
 * try
 #+BEGIN_SRC emacs-lisp
   (use-package try
