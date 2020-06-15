@@ -1,16 +1,16 @@
 #+STARTUP overview
 * interface tweaks
  #+BEGIN_SRC emacs-lisp
-      (load-theme 'atom-one-dark t)
-      (defalias 'yes-or-no-p 'y-or-n-p)
-      (defalias 'list-buffers 'ibuffer-other-window)
-      (setq inhibit-startup-message t) ;; hide the startup message
-      (global-linum-mode t) ;; enable line numbers globally
-      (tool-bar-mode -1) ;;disable toolbar
-      (menu-bar-mode -1) ;;disable menu bar
-      (scroll-bar-mode -1) ;; disable scroll bar
-      (global-set-key (kbd "<f5>") 'revert-buffer)
-      (global-set-key (kbd "M-,") 'pop-tag-mark) ;; go to last place where M-. was used (go-to-definition)
+   ;; (load-theme 'atom-one-dark t)		
+   (defalias 'yes-or-no-p 'y-or-n-p)
+   (defalias 'list-buffers 'ibuffer-other-window)
+   (setq inhibit-startup-message t) ;; hide the startup message
+   (global-linum-mode t) ;; enable line numbers globally
+   (tool-bar-mode -1) ;;disable toolbar
+   (menu-bar-mode -1) ;;disable menu bar
+   (scroll-bar-mode -1) ;; disable scroll bar
+   (global-set-key (kbd "<f5>") 'revert-buffer)
+   (global-set-key (kbd "M-,") 'pop-tag-mark) ;; go to last place where M-. was used (go-to-definition)
  #+END_SRC
 * try
 #+BEGIN_SRC emacs-lisp
@@ -83,14 +83,10 @@
 
 * flycheck
   #+BEGIN_SRC emacs-lisp
-    (use-package flycheck-google-cpplint
-      :ensure t)
     (use-package flycheck
       :ensure t
       :init
-      (global-flycheck-mode t)
-      :config
-      (flycheck-add-next-checker 'c/c++-clang '(warning . c/c++-googlelint)))
+      (global-flycheck-mode t))
   #+END_SRC
 
 * smart parenthesis
@@ -132,6 +128,7 @@
 
 
 * Julia
+
 #+BEGIN_SRC emacs-lisp
   (use-package lsp-mode
     :ensure t)
@@ -149,6 +146,72 @@
       (add-hook 'julia-mode-hook #'lsp-mode)
       (add-hook 'julia-mode-hook #'lsp)))
 #+END_SRC
+
+
+* Latex with Auctex
+  #+BEGIN_SRC emacs-lisp
+    (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+    (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
+
+    (defun german-dict ()
+      (ispell-change-dictionary 'german))
+
+    ;; (add-hook 'LaTeX-mode-hook 'german-dict)
+
+    (load "auctex.el" nil t t)
+
+    (setq TeX-auto-save t)
+    (setq TeX-parse-self t)
+    (setq TeX-save-query nil)
+
+    (setq TeX-PDF-mode t)
+
+
+    (require 'tex-site)
+    (autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
+    (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
+    (autoload 'reftex-citation "reftex-cite" "Make citation" nil)
+    (autoload 'reftex-index-phrase-mode "reftex-index" "Phrase Mode" t)
+    (add-hook 'latex-mode-hook 'turn-on-reftex) ; with Emacs latex mode
+    ;; (add-hook 'reftex-load-hook 'imenu-add-menubar-index)
+    (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+
+    (setq LaTeX-eqnarray-label "eq"
+	  LaTeX-equation-label "eq"
+	  LaTeX-figure-label "fig"
+	  LaTeX-table-label "tab"
+	  LaTeX-myChapter-label "chap"
+	  TeX-auto-save t
+	  TeX-newline-function 'reindent-then-newline-and-indent
+	  TeX-parse-self t
+	  ;; TeX-style-path
+	  ;; '("style/" "auto/"
+	  ;; "/usr/share/emacs21/site-lisp/auctex/style/"
+	  ;; "/var/lib/auctex/emacs21/"
+	  ;; "/usr/local/share/emacs/site-lisp/auctex/style/")
+	  LaTeX-section-hook
+	  '(LaTeX-section-heading
+	    LaTeX-section-title
+	    LaTeX-section-toc
+	    LaTeX-section-section
+	    LaTeX-section-label))
+
+
+    ;; Make okular work
+    (setq TeX-source-correlate-mode t
+	  TeX-source-correlate-start-server t)
+    (eval-after-load "tex"
+      '(setcar (cdr (assoc 'output-pdf TeX-view-program-selection)) "Okular"))
+
+
+    ;; (company-auctex-init)
+    ;; (setq company-math-disallow-unicode-symbols-in-face nil)
+    ;; (append '((company-math-symbols-latex company-math-symbols-unicode
+    ;;               company-auctex-macros company-auctex-environments))
+    ;;                       company-backends)
+
+
+  #+END_SRC
 
 * the rest
 #+BEGIN_SRC emacs-lisp
@@ -237,67 +300,6 @@
 
   ;; (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
 
-  ;; Latex
-  ;; ---------------------------
-  (add-hook 'LaTeX-mode-hook 'flyspell-mode)
-  (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
-
-  (defun german-dict ()
-    (ispell-change-dictionary 'german))
-
-  ;; (add-hook 'LaTeX-mode-hook 'german-dict)
-
-  (load "auctex.el" nil t t)
-
-  (setq TeX-auto-save t)
-  (setq TeX-parse-self t)
-  (setq TeX-save-query nil)
-
-  (setq TeX-PDF-mode t)
-
-
-  (require 'tex-site)
-  (autoload 'reftex-mode "reftex" "RefTeX Minor Mode" t)
-  (autoload 'turn-on-reftex "reftex" "RefTeX Minor Mode" nil)
-  (autoload 'reftex-citation "reftex-cite" "Make citation" nil)
-  (autoload 'reftex-index-phrase-mode "reftex-index" "Phrase Mode" t)
-  (add-hook 'latex-mode-hook 'turn-on-reftex) ; with Emacs latex mode
-  ;; (add-hook 'reftex-load-hook 'imenu-add-menubar-index)
-  (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-
-  (setq LaTeX-eqnarray-label "eq"
-  LaTeX-equation-label "eq"
-  LaTeX-figure-label "fig"
-  LaTeX-table-label "tab"
-  LaTeX-myChapter-label "chap"
-  TeX-auto-save t
-  TeX-newline-function 'reindent-then-newline-and-indent
-  TeX-parse-self t
-  ;; TeX-style-path
-  ;; '("style/" "auto/"
-  ;; "/usr/share/emacs21/site-lisp/auctex/style/"
-  ;; "/var/lib/auctex/emacs21/"
-  ;; "/usr/local/share/emacs/site-lisp/auctex/style/")
-  LaTeX-section-hook
-  '(LaTeX-section-heading
-  LaTeX-section-title
-  LaTeX-section-toc
-  LaTeX-section-section
-  LaTeX-section-label))
-
-
-  ;; Make okular work
-  (setq TeX-source-correlate-mode t
-	TeX-source-correlate-start-server t)
-  (eval-after-load "tex"
-    '(setcar (cdr (assoc 'output-pdf TeX-view-program-selection)) "Okular"))
-
-
-  ;; (company-auctex-init)
-  ;; (setq company-math-disallow-unicode-symbols-in-face nil)
-  ;; (append '((company-math-symbols-latex company-math-symbols-unicode
-  ;;               company-auctex-macros company-auctex-environments))
-  ;;                       company-backends)
-
+  
 #+END_SRC
 
