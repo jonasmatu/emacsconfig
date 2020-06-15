@@ -17,7 +17,7 @@
   #+BEGIN_SRC emacs-lisp
     (use-package subatomic-theme
       :ensure t
-      :config
+      :init
       (setq subatomic-more-visible-comment-delimiters t))
   #+END_SRC
 
