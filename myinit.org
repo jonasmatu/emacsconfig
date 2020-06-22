@@ -16,6 +16,7 @@
      '(define-key flyspell-mode-map (kbd "C-;") nil))
  #+END_SRC
 * Backups
+  Make backups in central folder
   #+BEGIN_SRC emacs-lisp
     (let ((backup-dir "~/.emacs.d/backups")
 	  (auto-saves-dir "~/.emacs.d/backups"))
