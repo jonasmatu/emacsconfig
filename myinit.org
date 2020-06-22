@@ -15,7 +15,25 @@
    (eval-after-load "flyspell"
      '(define-key flyspell-mode-map (kbd "C-;") nil))
  #+END_SRC
+* Backups
+  #+BEGIN_SRC emacs-lisp
+    (let ((backup-dir "~/.emacs.d/backups")
+	  (auto-saves-dir "~/.emacs.d/backups"))
+      (when (not (file-directory-p backup-dir))
+	(make-directory backup-dir t))
+      (setq backup-directory-alist `(("." . ,backup-dir))
+	    auto-save-file-name-transforms `((".*" ,auto-saves-dir t))
+	    auto-save-list-file-prefix (concat auto-saves-dir ".saves-")
+	    tramp-backup-directory-alist `((".*" . ,backup-dir))
+	    tramp-auto-save-directory auto-saves-dir))
 
+    (setq backup-by-copying t
+	  delete-old-versions t
+	  version-control t
+	  kept-new-versions 5
+	  kept-old-versions 2)
+
+  #+END_SRC
 * theme subatomic
   #+BEGIN_SRC emacs-lisp
     (use-package subatomic-theme
@@ -39,11 +57,13 @@
 
 * Org mode 
   #+BEGIN_SRC emacs-lisp
-  (use-package org-bullets
-    :ensure t
-    :config
-    (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
-    (setq org-src-tab-acts-natively t))
+    (use-package org-bullets
+      :ensure t
+      :config
+      (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+      (setq org-src-tab-acts-natively t)
+      (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.6))
+      (setq org-log-done 'time))
   #+END_SRC
 
 * swiper /counsil /ivy
