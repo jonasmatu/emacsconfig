@@ -3,7 +3,6 @@
  #+BEGIN_SRC emacs-lisp
    ;; (load-theme 'atom-one-dark t)		
    (defalias 'yes-or-no-p 'y-or-n-p)
-   (defalias 'list-buffers 'ibuffer-other-window)
    (setq inhibit-startup-message t) ;; hide the startup message
    (global-linum-mode t) ;; enable line numbers globally
    (tool-bar-mode -1) ;;disable toolbar
@@ -43,6 +42,29 @@
       (setq subatomic-more-visible-comment-delimiters t))
   #+END_SRC
 
+* ibuffer
+  #+BEGIN_SRC emacs-lisp
+    (defalias 'list-buffers 'ibuffer-other-window)
+    (setq ibuffer-saved-filter-groups
+	  (quote (("default"
+		   ("dired" (mode . dired-mode))
+		   ("org" (name . "^.*org$"))
+		   ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
+		   ("programming" (or
+				   (mode . python-mode)
+				   (mode . c++-mode)
+				   (mode . julia-mode)))
+		   ("emacs" (or
+			     (name . "^\\*scratch\\*$")
+			     (name . "^\\*Messages\\*$")))
+		   ))))
+    (add-hook 'ibuffer-mode-hook
+	      (lambda ()
+		(ibuffer-auto-mode 1)
+		(ibuffer-switch-to-saved-filter-groups "default")))
+    ;; Don't show filter groups if there are no buffers in that group
+    (setq ibuffer-show-empty-filter-groups nil)
+  #+END_SRC
 * try
 #+BEGIN_SRC emacs-lisp
   (use-package try
@@ -211,6 +233,20 @@
 		  nil)))
   #+END_SRC
 
+* Projectile
+  #+BEGIN_SRC emacs-lisp
+    (use-package projectile
+      :ensure t
+      :config
+      (projectile-global-mode
+       (setq projectile-completion-system 'ivy))
+      (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+
+    (use-package counsel-projectile
+      :ensure t
+      :config
+      (counsel-projectile-mode))
+  #+END_SRC
 * Misc packages
 #+BEGIN_SRC emacs-lisp
   (use-package beacon
