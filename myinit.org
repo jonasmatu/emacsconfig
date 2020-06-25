@@ -48,6 +48,7 @@
     (setq ibuffer-saved-filter-groups
 	  (quote (("default"
 		   ("dired" (mode . dired-mode))
+	           ("LaTeX" (mode . tex-mode))
 		   ("org" (name . "^.*org$"))
 		   ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
 		   ("programming" (or
