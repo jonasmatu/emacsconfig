@@ -13,6 +13,8 @@
    (global-set-key (kbd "M-,") 'pop-tag-mark) ;; go to last place where M-. was used (go-to-definition)
    (eval-after-load "flyspell"
      '(define-key flyspell-mode-map (kbd "C-;") nil))
+   (setq-default fill-column 90)
+   (setq sentence-end-double-space nil)
  #+END_SRC
 * Backups
   Make backups in central folder
