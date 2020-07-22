@@ -36,14 +36,25 @@
 	  kept-old-versions 2)
 
   #+END_SRC
-* theme subatomic
+* Themes and Modeline
   #+BEGIN_SRC emacs-lisp
-    (use-package subatomic-theme
+    ;; (use-package subatomic-theme
+    ;;   :ensure t
+    ;;   :init
+    ;;   (setq subatomic-more-visible-comment-delimiters t))
+    (use-package doom-themes
       :ensure t
-      :init
-      (setq subatomic-more-visible-comment-delimiters t))
+      :config
+      (setq doom-themes-enable-bold t
+	    doom-themes-enable-italic t)
+      (load-theme 'doom-one t)
+      (doom-themes-org-config))
+    (use-package all-the-icons
+      :ensure t)
+    (use-package doom-modeline
+      :ensure t
+      :init (doom-modeline-mode 1))
   #+END_SRC
-
 * ibuffer
   #+BEGIN_SRC emacs-lisp
     (defalias 'list-buffers 'ibuffer-other-window)
