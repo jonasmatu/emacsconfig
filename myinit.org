@@ -551,7 +551,22 @@
 
    #+RESULTS:
    : t
+* PDF Tools
+  #+BEGIN_SRC emacs-lisp
+    (use-package pdf-tools
+      :ensure t
+      :config
+      (pdf-tools-install))
 
+    (use-package org-pdftools
+      :hook (org-load . org-pdftools-setup-link))
+
+    (use-package org-noter-pdftools
+      :after org-noter
+      :config
+      (with-eval-after-load 'pdf-annot
+	(add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
+  #+END_SRC
 * the rest
 #+BEGIN_SRC emacs-lisp
   ;; multiple-cursors
