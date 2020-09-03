@@ -51,9 +51,9 @@
       (doom-themes-org-config))
     (use-package all-the-icons
       :ensure t)
-    (use-package doom-modeline
-      :ensure t
-      :init (doom-modeline-mode 1))
+    ;; (use-package doom-modeline
+    ;;   :ensure t
+    ;;   :init (doom-modeline-mode 1))
   #+END_SRC
 * ibuffer
   #+BEGIN_SRC emacs-lisp
@@ -328,6 +328,10 @@
 ** Julia
 
  #+BEGIN_SRC emacs-lisp
+
+   (setenv "PATH" (concat (getenv "PATH") ":/usr/local/programms/julia-1.5.1/bin/"))
+   (setq exec-path (append exec-path '("/usr/local/programms/julia-1.5.1/bin/")))
+
    (use-package lsp-mode
      :ensure t
      :config
@@ -338,7 +342,7 @@
      :ensure t
      :config
      (progn
-       (setq lsp-julia-default-environment "~/.julia/environments/v1.4")
+       (setq lsp-julia-default-environment "~/.julia/environments/v1.5")
        (setq lsp-julia-package-dir nil)))
 
    (use-package julia-mode
