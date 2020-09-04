@@ -329,8 +329,8 @@
 
  #+BEGIN_SRC emacs-lisp
 
-   (setenv "PATH" (concat (getenv "PATH") ":/usr/local/programms/julia-1.5.1/bin/"))
-   (setq exec-path (append exec-path '("/usr/local/programms/julia-1.5.1/bin/")))
+   (setenv "PATH" (concat (getenv "PATH") ":/usr/local/programs/julia-1.5.1/bin/"))
+   (setq exec-path (append exec-path '("/usr/local/programs/julia-1.5.1/bin/")))
 
    (use-package lsp-mode
      :ensure t
