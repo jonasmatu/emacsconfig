@@ -51,9 +51,9 @@
       (doom-themes-org-config))
     (use-package all-the-icons
       :ensure t)
-    ;; (use-package doom-modeline
-    ;;   :ensure t
-    ;;   :init (doom-modeline-mode 1))
+    (use-package doom-modeline
+      :ensure t
+      :init (doom-modeline-mode 1))
   #+END_SRC
 * ibuffer
   #+BEGIN_SRC emacs-lisp
