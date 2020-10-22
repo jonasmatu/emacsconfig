@@ -29,7 +29,7 @@
     ("b7133876a11eb2ded01b4b144b45d9e7457f80dd5900c332241881ab261c50f4" default)))
  '(package-selected-packages
    (quote
-    (company-lsp lsp-ui ccls org-pdfview pdf-tools doom-themes doom-modeline counsel-projectile projectile yasnippet-snippets ggtags iedit aggressive-indent hungry-delete beacon undo-tree subatomic-theme which-key use-package try smartparens py-autopep8 org-bullets multiple-cursors material-theme lsp-julia flycheck-julia elpy counsel company-auctex color-theme-sanityinc-tomorrow better-defaults avy atom-one-dark-theme)))
+    (anki-editor anki-connect company-lsp lsp-ui ccls org-pdfview pdf-tools doom-themes doom-modeline counsel-projectile projectile yasnippet-snippets ggtags iedit aggressive-indent hungry-delete beacon undo-tree subatomic-theme which-key use-package try smartparens py-autopep8 org-bullets multiple-cursors material-theme lsp-julia flycheck-julia elpy counsel company-auctex color-theme-sanityinc-tomorrow better-defaults avy atom-one-dark-theme)))
  '(subatomic-more-visible-comment-delimiters t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
