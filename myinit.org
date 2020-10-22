@@ -1,4 +1,5 @@
 #+STARTUP overview
+
 * interface tweaks
  #+BEGIN_SRC emacs-lisp
    ;; (load-theme 'atom-one-dark t)		
@@ -61,7 +62,7 @@
     (setq ibuffer-saved-filter-groups
 	  (quote (("default"
 		   ("dired" (mode . dired-mode))
-	           ("LaTeX" (mode . tex-mode))
+	           ("LaTeX" (name . "^.*tex"))
 		   ("org" (name . "^.*org$"))
 		   ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
 		   ("programming" (or
