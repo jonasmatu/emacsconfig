@@ -101,6 +101,14 @@
       (setq org-src-tab-acts-natively t)
       (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.6))
       (setq org-log-done 'time))
+
+    (defun org-my-custom-timestamp ()
+      (interactive)
+      (insert (format-time-string "%H:%M")))
+    (add-hook 'org-mode-hook
+	      (lambda ()
+		(local-set-key (kbd "C-c C-n .") 'org-my-custom-timestamp)))
+
   #+END_SRC
 
 * swiper /counsil /ivy
@@ -201,6 +209,7 @@
 	(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
 	(yas-reload-all)
 	(add-hook 'c++-mode-hook #'yas-minor-mode)
+	(add-hook 'latex-mode-hook #'yas-minor-mode)
 	(yas-global-mode 1)))
 
     (use-package yasnippet-snippets
