@@ -61,13 +61,12 @@
     (setq ibuffer-saved-filter-groups
 	  (quote (("default"
 		   ("dired" (mode . dired-mode))
-	           ("LaTeX" (mode . latex-mode))
+		   ("LaTeX" (mode . latex-mode))
 		   ("org" (name . "^.*org$"))
 		   ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
-		   ("programming" (or
-				   (mode . python-mode)
-				   (mode . c++-mode)
-				   (mode . julia-mode)))
+		   ("Python" (mode . python-mode))
+		   ("C++" (mode . c++-mode))
+		   ("julia" (mode . julia-mode))
 		   ("emacs" (or
 			     (name . "^\\*scratch\\*$")
 			     (name . "^\\*Messages\\*$")))
