@@ -62,13 +62,12 @@
     (setq ibuffer-saved-filter-groups
 	  (quote (("default"
 		   ("dired" (mode . dired-mode))
-	           ("LaTeX" (mode . latex-mode))
+		   ("LaTeX" (mode . latex-mode))
 		   ("org" (name . "^.*org$"))
 		   ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
-		   ("programming" (or
-				   (mode . python-mode)
-				   (mode . c++-mode)
-				   (mode . julia-mode)))
+		   ("Python" (mode . python-mode))
+		   ("C++" (mode . c++-mode))
+		   ("julia" (mode . julia-mode))
 		   ("emacs" (or
 			     (name . "^\\*scratch\\*$")
 			     (name . "^\\*Messages\\*$")))
@@ -110,41 +109,72 @@
 	      (lambda ()
 		(local-set-key (kbd "C-c C-n .") 'org-my-custom-timestamp)))
 
+    (setq org-agenda-files (list "~/Documents/Uni/uni.org"))
+  #+END_SRC
+* selectrum/ctrlf/amx/consult
+  #+BEGIN_SRC emacs-lisp
+    (use-package consult
+      :ensure t
+      :bind (
+	     ("C-x b" . consult-buffer)
+	     ("M-y" . consult-yank-pop))
+      :config
+      (recentf-mode +1))
+
+    (use-package selectrum
+      :ensure t
+      :config
+      (selectrum-mode +1)
+      (selectrum-prescient-mode +1)
+      (prescient-persist-mode +1))
+
+    (use-package ctrlf
+      :ensure t
+      :config
+      (ctrlf-mode +1))
+
+    (use-package amx
+      :ensure t
+      :config
+      (amx-mode +1))
   #+END_SRC
 
 * swiper /counsil /ivy
-#+BEGIN_SRC emacs-lisp
-  (use-package ivy
-    :ensure t
-    :diminish (ivy-mode)
-    :bind (("C-x b" . ivy-switch-buffer))
-    :config
-    (ivy-mode 1)
-    (setq ivy-use-virtual-buffers t)
-    (setq ivy-display-style 'fancy))
+  #+BEGIN_SRC emacs-lisp
+    ;; (use-package ivy
+    ;;   :ensure t
+    ;;   :diminish (ivy-mode)
+    ;;   :bind (("C-x b" . ivy-switch-buffer))
+    ;;   :config
+    ;;   (ivy-mode 1)
+    ;;   (setq ivy-use-virtual-buffers t)
+    ;;   (setq ivy-display-style 'fancy))
 
-  (use-package counsel
-    :ensure t
-    :bind
-    (("M-y" . counsel-yank-pop)
-     :map ivy-minibuffer-map
-     ("M-y" . ivy-next-line)))
+    ;; (use-package ivy-prescient
+    ;;   :ensure t)
+
+    ;; (use-package counsel
+    ;;   :ensure t
+    ;;   :bind
+    ;;   (("M-y" . counsel-yank-pop)
+    ;;    :map ivy-minibuffer-map
+    ;;    ("M-y" . ivy-next-line)))
 
 
-  (use-package swiper
-    :ensure t
-    :bind (("C-M-s" . swiper)
-	   ("C-c C-r" . ivy-resume)
-	   ("M-x" . counsel-M-x)
-	   ("C-x C-f" . counsel-find-file))
-    :config
-    (progn
-      (ivy-mode 1)
-      (setq ivy-use-virtual-buffers t)
-      (setq ivy-display-style 'fancy)
-      (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
-      ))
-#+END_SRC
+    ;; (use-package swiper
+    ;;   :ensure t
+    ;;   :bind (("C-M-s" . swiper)
+    ;; 	 ("C-c C-r" . ivy-resume)
+    ;; 	 ("M-x" . counsel-M-x)
+    ;; 	 ("C-x C-f" . counsel-find-file))
+    ;;   :config
+    ;;   (progn
+    ;;     (ivy-mode 1)
+    ;;     (setq ivy-use-virtual-buffers t)
+    ;;     (setq ivy-display-style 'fancy)
+    ;;     (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+    ;;     ))
+  #+END_SRC
 
 * avy
 #+BEGIN_SRC emacs-lisp
@@ -178,10 +208,13 @@
     :commands company-lsp
     :config (push 'company-lsp company-backends))
 
+  (use-package company-prescient
+    :ensure t)
+
 
 #+END_SRC
 
-* flycheck
+* Flycheck
   #+BEGIN_SRC emacs-lisp
     (use-package flycheck
       :ensure t
@@ -312,6 +345,7 @@
       (if (file-readable-p f)
 	  (load-file f)))
   #+END_SRC
+
 * Programming Languages
 ** Python 
    #+BEGIN_SRC emacs-lisp
@@ -342,32 +376,31 @@
    #+END_SRC
 
 ** Julia
+   #+BEGIN_SRC emacs-lisp
 
- #+BEGIN_SRC emacs-lisp
+     (setenv "PATH" (concat (getenv "PATH") ":/usr/local/programs/julia-1.6.0/bin/"))
+     (setq exec-path (append exec-path '("/usr/local/programs/julia-1.6.0/bin/")))
 
-   (setenv "PATH" (concat (getenv "PATH") ":/usr/local/programs/julia-1.6.0/bin/"))
-   (setq exec-path (append exec-path '("/usr/local/programs/julia-1.6.0/bin/")))
+     (use-package lsp-mode
+       :ensure t
+       :config
+       (setq lsp-enable-indentation nil)
+       (setq lsp-enable-on-type-formatting nil))
 
-   (use-package lsp-mode
-     :ensure t
-     :config
-     (setq lsp-enable-indentation nil)
-     (setq lsp-enable-on-type-formatting nil))
+     (use-package lsp-julia
+       :ensure t
+       :config
+       (progn
+	 (setq lsp-julia-default-environment "~/.julia/environments/v1.6")
+	 (setq lsp-julia-package-dir nil)))
 
-   (use-package lsp-julia
-     :ensure t
-     :config
-     (progn
-       (setq lsp-julia-default-environment "~/.julia/environments/v1.6")
-       (setq lsp-julia-package-dir nil)))
-
-   (use-package julia-mode
-     :ensure t
-     :config
-     (progn
-       (add-hook 'julia-mode-hook #'lsp-mode)
-       (add-hook 'julia-mode-hook #'lsp)))
- #+END_SRC
+     (use-package julia-mode
+       :ensure t
+       :config
+       (progn
+	 (add-hook 'julia-mode-hook #'lsp-mode)
+	 (add-hook 'julia-mode-hook #'lsp)))
+   #+END_SRC
 
 ** Latex with Auctex
    #+BEGIN_SRC emacs-lisp
