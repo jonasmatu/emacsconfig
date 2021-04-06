@@ -345,8 +345,8 @@
 
  #+BEGIN_SRC emacs-lisp
 
-   (setenv "PATH" (concat (getenv "PATH") ":/usr/local/programs/julia-1.5.1/bin/"))
-   (setq exec-path (append exec-path '("/usr/local/programs/julia-1.5.1/bin/")))
+   (setenv "PATH" (concat (getenv "PATH") ":/usr/local/programs/julia-1.6.0/bin/"))
+   (setq exec-path (append exec-path '("/usr/local/programs/julia-1.6.0/bin/")))
 
    (use-package lsp-mode
      :ensure t
@@ -358,7 +358,7 @@
      :ensure t
      :config
      (progn
-       (setq lsp-julia-default-environment "~/.julia/environments/v1.5")
+       (setq lsp-julia-default-environment "~/.julia/environments/v1.6")
        (setq lsp-julia-package-dir nil)))
 
    (use-package julia-mode
