@@ -248,6 +248,12 @@
     (use-package flycheck
       :ensure t
       :init
+      (setq mylintfile (concat
+			(car (file-expand-wildcards "/home/jonas/.emacs.d/elpa/flycheck-[0-9]*"))
+			"/flycheck-google-cpplint.el"))
+      (unless (file-exists-p mylintfile)
+	(copy-file "/home/jonas/.emacs.d/elpa/flycheck-google-cpplint.el"
+		   mylintfile))
       (global-flycheck-mode t))
   #+END_SRC
 
