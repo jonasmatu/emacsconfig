@@ -116,7 +116,7 @@
     :config (which-key-mode)) 
 #+END_SRC
 
-* Org mode 
+* Org Mode 
   #+BEGIN_SRC emacs-lisp
     (use-package org-bullets
       :ensure t
@@ -137,67 +137,67 @@
   #+END_SRC
 * selectrum/ctrlf/amx/consult
   #+BEGIN_SRC emacs-lisp
-    (use-package selectrum
-      :ensure t
-      :config
-      (selectrum-mode +1)
-      (selectrum-prescient-mode +1)
-      (prescient-persist-mode +1))
+    ;; (use-package selectrum
+    ;;   :ensure t
+    ;;   :config
+    ;;   (selectrum-mode +1)
+    ;;   (selectrum-prescient-mode +1)
+    ;;   (prescient-persist-mode +1))
 
-    (use-package consult
-      :ensure t
-      :bind (
-	     ("C-x b" . consult-buffer)
-	     ("M-y" . consult-yank-pop))
-      :config
-      (recentf-mode +1))
+    ;; (use-package consult
+    ;;   :ensure t
+    ;;   :bind (
+    ;; 	     ("C-x b" . consult-buffer)
+    ;; 	     ("M-y" . consult-yank-pop))
+    ;;   :config
+    ;;   (recentf-mode +1))
 
-    (use-package ctrlf
-      :ensure t
-      :config
-      (ctrlf-mode +1))
+    ;; (use-package ctrlf
+    ;;   :ensure t
+    ;;   :config
+    ;;   (ctrlf-mode +1))
 
-    (use-package amx
-      :ensure t
-      :config
-      (amx-mode +1))
+    ;; (use-package amx
+    ;;   :ensure t
+    ;;   :config
+    ;;   (amx-mode +1))
   #+END_SRC
 
 * swiper /counsil /ivy
   #+BEGIN_SRC emacs-lisp
-    ;; (use-package ivy
-    ;;   :ensure t
-    ;;   :diminish (ivy-mode)
-    ;;   :bind (("C-x b" . ivy-switch-buffer))
-    ;;   :config
-    ;;   (ivy-mode 1)
-    ;;   (setq ivy-use-virtual-buffers t)
-    ;;   (setq ivy-display-style 'fancy))
+    (use-package ivy
+      :ensure t
+      :diminish (ivy-mode)
+      :bind (("C-x b" . ivy-switch-buffer))
+      :config
+      (ivy-mode 1)
+      (setq ivy-use-virtual-buffers t)
+      (setq ivy-display-style 'fancy))
 
-    ;; (use-package ivy-prescient
-    ;;   :ensure t)
+    (use-package ivy-prescient
+      :ensure t)
 
-    ;; (use-package counsel
-    ;;   :ensure t
-    ;;   :bind
-    ;;   (("M-y" . counsel-yank-pop)
-    ;;    :map ivy-minibuffer-map
-    ;;    ("M-y" . ivy-next-line)))
+    (use-package counsel
+      :ensure t
+      :bind
+      (("M-y" . counsel-yank-pop)
+       :map ivy-minibuffer-map
+       ("M-y" . ivy-next-line)))
 
 
-    ;; (use-package swiper
-    ;;   :ensure t
-    ;;   :bind (("C-M-s" . swiper)
-    ;; 	 ("C-c C-r" . ivy-resume)
-    ;; 	 ("M-x" . counsel-M-x)
-    ;; 	 ("C-x C-f" . counsel-find-file))
-    ;;   :config
-    ;;   (progn
-    ;;     (ivy-mode 1)
-    ;;     (setq ivy-use-virtual-buffers t)
-    ;;     (setq ivy-display-style 'fancy)
-    ;;     (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
-    ;;     ))
+    (use-package swiper
+      :ensure t
+      :bind (("C-M-s" . swiper)
+	 ("C-c C-r" . ivy-resume)
+	 ("M-x" . counsel-M-x)
+	 ("C-x C-f" . counsel-find-file))
+      :config
+      (progn
+        (ivy-mode 1)
+        (setq ivy-use-virtual-buffers t)
+        (setq ivy-display-style 'fancy)
+        (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+        ))
   #+END_SRC
 
 * avy
@@ -208,40 +208,38 @@
 #+END_SRC
 
 * Company
-#+BEGIN_SRC emacs-lisp
-  (use-package company
-    :ensure t
-    :bind
-    (:map company-active-map
-	  ("<tab>" . company-complete-selection))
-    ;; (:map lsp-mode-map
-    ;; 	  ("<tab>" . company-indent-or-complete-common))
-    :config
-    (progn
-      (setq company-dabbrev-downcase 0)
-      (setq company-idle-delay 0)
-      (setq company-require-match nil)
-      (defvar company-mode/enable-yas t)
-      (add-hook 'after-init-hook 'global-company-mode)))
+  #+BEGIN_SRC emacs-lisp
+    (use-package company
+      :ensure t
+      :bind
+      (:map company-active-map
+	    ("<tab>" . company-complete-selection))
+      ;; (:map lsp-mode-map
+      ;; 	  ("<tab>" . company-indent-or-complete-common))
+      :config
+      (progn
+	(setq company-dabbrev-downcase 0)
+	(setq company-idle-delay 0)
+	(setq company-require-match nil)
+	(defvar company-mode/enable-yas t)
+	(add-hook 'after-init-hook 'global-company-mode)))
 
-  (defun company-mode/backend-with-yas (backend)
-    (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
-	backend
-      (append (if (consp backend) backend (list backend))
-	      '(:with company-yasnippet))))
+    (defun company-mode/backend-with-yas (backend)
+      (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+	  backend
+	(append (if (consp backend) backend (list backend))
+		'(:with company-yasnippet))))
 
-  ;; (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends)) 
+    ;; (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
 
-  (use-package company-lsp
-    :ensure t
-    :commands company-lsp
-    :config (push 'company-lsp company-backends))
+    (use-package company-lsp
+      :ensure t
+      :commands company-lsp
+      :config (push 'company-lsp company-backends))
 
-  (use-package company-prescient
-    :ensure t)
-
-
-#+END_SRC
+    (use-package company-prescient
+      :ensure t)
+  #+END_SRC
 
 * Flycheck
   #+BEGIN_SRC emacs-lisp
