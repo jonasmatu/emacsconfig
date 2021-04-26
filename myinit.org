@@ -165,7 +165,6 @@
     ;;   :config
     ;;   (amx-mode +1))
   #+END_SRC
-  
 * swiper /counsil /ivy
   #+BEGIN_SRC emacs-lisp
     (use-package ivy
@@ -182,7 +181,10 @@
       (setq ivy-count-format "%d/%d "))
 
     (use-package ivy-prescient
-      :ensure t)
+      :ensure t
+      :init
+      (ivy-prescient-mode 1)
+      (prescient-persist-mode))
 
     (use-package ivy-rich
       :ensure t
