@@ -178,8 +178,8 @@
       (setq ivy-use-virtual-buffers t)
       (setq ivy-display-style 'fancy)
       (setq ivy-wrap t)
-      (setq enable-recursive-minibuffers t))
-      ;; (setq ivy-count-format "(%d/%d) ")
+      (setq enable-recursive-minibuffers t)
+      (setq ivy-count-format "%d/%d "))
 
     (use-package ivy-prescient
       :ensure t)
@@ -198,6 +198,7 @@
 	     ("M-y" . ivy-next-line)
 	     :map minibuffer-local-map
 	     ("C-r" . 'counsel-minibuffer-history)))
+
 
 
     (use-package swiper
@@ -258,12 +259,6 @@
     (use-package flycheck
       :ensure t
       :init
-      (setq mylintfile (concat
-			(car (file-expand-wildcards "/home/jonas/.emacs.d/elpa/flycheck-[0-9]*"))
-			"/flycheck-google-cpplint.el"))
-      (unless (file-exists-p mylintfile)
-	(copy-file "/home/jonas/.emacs.d/elpa/flycheck-google-cpplint.el"
-		   mylintfile))
       (global-flycheck-mode t))
   #+END_SRC
 
@@ -463,6 +458,13 @@
 
      (eval-after-load 'flycheck
        '(progn
+	  (setq mylintfile (concat
+			    (car (file-expand-wildcards "/home/jonas/.emacs.d/elpa/flycheck-[0-9]*"))
+			    "/flycheck-google-cpplint.el"))
+	  (unless (file-exists-p mylintfile)
+	    (copy-file "/home/jonas/.emacs.d/elpa/flycheck-google-cpplint.el"
+		       mylintfile))
+
 	  (require 'flycheck-google-cpplint)
 	  (flycheck-add-next-checker 'c/c++-clang
 				     '(warning . c/c++-googlelint))))
@@ -475,6 +477,8 @@
      (add-hook 'LaTeX-mode-hook 'flyspell-buffer)
      (defun german-dict ()
        (ispell-change-dictionary 'german))
+     (defun english-dict ()
+       (ispell-change-dictionary 'british))
 
      ;; (add-hook 'LaTeX-mode-hook 'german-dict)
 
