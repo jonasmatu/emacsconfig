@@ -138,33 +138,6 @@
 
     (setq org-agenda-files (list "~/Documents/Uni/uni.org"))
   #+END_SRC
-* selectrum/ctrlf/amx/consult
-  #+BEGIN_SRC emacs-lisp
-    ;; (use-package selectrum
-    ;;   :ensure t
-    ;;   :config
-    ;;   (selectrum-mode +1)
-    ;;   (selectrum-prescient-mode +1)
-    ;;   (prescient-persist-mode +1))
-
-    ;; (use-package consult
-    ;;   :ensure t
-    ;;   :bind (
-    ;; 	     ("C-x b" . consult-buffer)
-    ;; 	     ("M-y" . consult-yank-pop))
-    ;;   :config
-    ;;   (recentf-mode +1))
-
-    ;; (use-package ctrlf
-    ;;   :ensure t
-    ;;   :config
-    ;;   (ctrlf-mode +1))
-
-    ;; (use-package amx
-    ;;   :ensure t
-    ;;   :config
-    ;;   (amx-mode +1))
-  #+END_SRC
 * swiper /counsil /ivy
   #+BEGIN_SRC emacs-lisp
     (use-package ivy
