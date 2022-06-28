@@ -1,0 +1,844 @@
+#+STARTUP: overview
+
+* Interface and Performance Tweaks
+ #+BEGIN_SRC emacs-lisp
+   (setq comp-deferred-compilation t)
+   (defalias 'yes-or-no-p 'y-or-n-p)
+   (setq inhibit-startup-message t) ;; hide the startup message
+   ;; Show line numbers except for org mode
+   (global-display-line-numbers-mode t)
+   (dolist (mode '(org-mode-hook
+		   term-mode-hook
+		   eshell-mode-hook))
+     (add-hook mode (lambda () (display-line-numbers-mode 0))))
+   (tool-bar-mode -1) ;;disable toolbar
+   (menu-bar-mode -1) ;; disable menu bar
+   (scroll-bar-mode -1) ;; disable scroll bar
+   (global-hl-line-mode t)
+   (global-set-key (kbd "<f5>") 'revert-buffer)
+   (global-set-key (kbd "M-,") 'pop-tag-mark) ;; go to last place where M-. was used (go-to-definition)
+   (eval-after-load "flyspell"
+     '(define-key flyspell-mode-map (kbd "C-;") nil))
+   (setq-default fill-column 90)
+   (setq sentence-end-double-space nil)
+   (use-package rainbow-delimiters
+     :ensure t
+     :hook (prog-mode . rainbow-delimiters-mode))
+   ;; More recent files:
+   (setq recentf-max-menu-items 50)
+   (setq recentf-max-saved-items 50)
+   ;; Font settings
+   ;; (add-to-list 'default-frame-alist '(font . "DejaVu Sans Mono Book"))
+   (set-face-attribute 'default nil :font "DejaVu Sans Mono Book" :height 115)
+   ;; (set-face-attribute 'default nil :font "Hack" :height 110)
+   ;; No bell !
+   (setq visible-bell t)
+   (setq ring-bell-function 'ignore)
+   (setq gc-cons-threshold 100000000)
+   (setq read-process-output-max (* 1024 1024)) ;; 1mb
+ #+END_SRC
+* Backups
+  Make backups in central folder
+  #+BEGIN_SRC emacs-lisp
+    (let ((backup-dir "~/.emacs.d/backups")
+	  (auto-saves-dir "~/.emacs.d/backups"))
+      (when (not (file-directory-p backup-dir))
+	(make-directory backup-dir t))
+      (setq backup-directory-alist `(("." . ,backup-dir))
+	    auto-save-file-name-transforms `((".*" ,auto-saves-dir t))
+	    auto-save-list-file-prefix (concat auto-saves-dir ".saves-")
+	    tramp-backup-directory-alist `((".*" . ,backup-dir))
+	    tramp-auto-save-directory auto-saves-dir))
+
+    (setq make-backup-files t
+	  backup-by-copying t
+	  delete-old-versions t
+	  version-control t
+	  kept-new-versions 5
+	  kept-old-versions 2
+	  vc-make-backup-files t)
+
+  #+END_SRC
+* Dashboard
+  #+BEGIN_SRC emacs-lisp
+    (use-package dashboard
+      :ensure t
+      :config
+      (dashboard-setup-startup-hook)
+      (setq dashboard-startup-banner 'logo)
+      (setq dashboard-set-heading-icons t)
+      (setq dashboard-set-file-icons t)
+      (setq dashboard-set-navigator t)
+      (add-to-list 'dashboard-items '(agenda) t)
+      (setq dashboard-week-agenda t)
+      (setq dashboard-filter-agenda-entry 'dashboard-no-filter-agenda)
+      (setq dashboard-items '((recents . 5)
+			      (projects . 5)
+			      (agenda . 5)
+			      (registers . 5)
+			      (bookmarks . 5))))
+  #+END_SRC
+* Crux
+  #+BEGIN_SRC emacs-lisp
+     (use-package crux
+       :ensure t
+       :bind (("C-k" . crux-smart-kill-line)
+	      ("C-M-j" . crux-top-join-line)
+	      ("C-a" . crux-move-beginning-of-line)
+	      ("C-c d" . crux-duplicate-current-line-or-region)
+	      ("C-c C-d" . crux-duplicate-and-comment-current-line-or-region)))
+  #+END_SRC
+* Themes and Modeline
+  #+BEGIN_SRC emacs-lisp
+    (use-package doom-themes
+      :ensure t
+      :config
+      (setq doom-themes-enable-bold t
+	    doom-themes-enable-italic t)
+      (load-theme 'doom-one t)
+      (doom-themes-org-config))
+
+    ;; (use-package spacemacs-theme
+    ;;   :ensure t
+    ;;   :config
+    ;;   (load-theme 'spacemacs-dark t))
+
+    (use-package all-the-icons
+      :ensure t
+      :commands all-the-icons-install-fonts
+      :init
+      (unless (find-font (font-spec :name "all-the-icons"))
+	(all-the-icons-install-fonts t)))
+
+    (use-package all-the-icons-dired
+      :ensure t
+      :hook (dired-mode . all-the-icons-dired-mode))
+
+    (use-package doom-modeline
+      :ensure t
+      :init (doom-modeline-mode 1))
+  #+END_SRC
+* ibuffer
+  #+BEGIN_SRC emacs-lisp
+	(defalias 'list-buffers 'ibuffer-other-window)
+	(setq ibuffer-saved-filter-groups
+	      (quote (("default"
+		       ("dired" (mode . dired-mode))
+		       ("LaTeX" (mode . latex-mode))
+		       ("org" (name . "^.*org$"))
+		       ("shell" (or (mode . eshell-mode) (mode . shell-mode)))
+		       ("Python" (mode . python-mode))
+		       ("C++" (mode . c++-mode))
+		       ("Julia" (mode . julia-mode))
+		       ("Fortran" (mode . f90-mode))
+		       ("emacs" (or
+				 (name . "^\\*scratch\\*$")
+				 (name . "^\\*Messages\\*$")))
+		       ("ssh" (name . "/ssh:*"))))))
+	(add-hook 'ibuffer-mode-hook
+		  (lambda ()
+		    (ibuffer-auto-mode 1)
+		    (ibuffer-switch-to-saved-filter-groups "default")))
+	;; Don't show filter groups if there are no buffers in that group
+	(setq ibuffer-show-empty-filter-groups nil)
+  #+END_SRC
+* Try
+  #+BEGIN_SRC emacs-lisp
+    (use-package try
+      :ensure t)
+  #+END_SRC
+
+* Helpful
+  #+BEGIN_SRC emacs-lisp
+    (use-package helpful
+      :ensure t
+      :custom
+      (counsel-describe-function-function #'helpful-callable)
+      (counsel-describe-variable-function #'helpful-variable)
+      :bind
+      ([remap describe-function] . counsel-describe-function)
+      ([remap describe-command] . helpful-command)
+      ([remap describe-variable] . counsel-describe-variable)
+      ([remap describe-key] . helpful-key))
+  #+END_SRC
+* Which Key 
+  #+BEGIN_SRC emacs-lisp
+    (use-package which-key
+      :ensure t
+      :diminish which-key-mode
+      :config (which-key-mode)) 
+  #+END_SRC
+
+* Org Mode 
+  #+BEGIN_SRC emacs-lisp
+    (use-package org-bullets
+      :ensure t
+      :config
+      (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+      (setq org-src-tab-acts-natively t)
+      (setq org-format-latex-options (plist-put org-format-latex-options :scale 1.6))
+      (setq org-log-done 'time)
+      (setq org-adapt-indentation t))
+
+    ;; (use-package ox-reveal
+    ;;   :ensure t
+    ;;   :config
+    ;;   (setq org-reveal-root "file:///home/jonas/.emacs.d/reveal.js")
+    ;;   (setq org-reveal-external-plugins '((highlight . "/home/jonas/.emacs.d/reveal.js/plugin/highlight/highlight.js")))
+    ;;   (setq org-reveal-external-plugins '((animate . "/home/jonas/.emacs.d/reveal.js/plugin/animate/svg.min.js")))
+    ;;   (setq org-reveal-title-slide nil))
+
+    (use-package org-re-reveal
+      :ensure t
+      :config
+      (setq org-re-reveal-root "file:///home/jonas/.emacs.d/reveal.js")
+      (add-to-list 'org-re-reveal-plugin-config '(animate "RevealAnimate" "plugin/animate/plugin.js")))
+
+    (defun org-my-custom-timestamp ()
+      (interactive)
+      (insert (format-time-string "%H:%M")))
+
+    (use-package org
+      :hook ((org-mode . flyspell-buffer) (org-mode . turn-on-org-cdlatex))
+      :bind (:map org-mode-map ("C-c C-n ." . org-my-custom-timestamp))
+      :config
+      (setq org-agenda-files (list "~/Documents/Uni/uni.org"
+				   ;; "~/Documents/Uni/Master/String Theory/stringtheory.org"
+				   ;; "~/Documents/Uni/Master/Symmetry/symmetry.org"
+				   "~/Research/Masterthesis/master.org"))
+      (setq org-hide-emphasis-markers t)
+      (setq org-src-fontify-natively t) ;; what does this do ?
+      (setq org-ellipsis "⤵")
+      (define-key org-mode-map (kbd "C-c a") 'org-agenda))
+
+    ;; (use-package org-roam
+    ;;   :ensure t
+    ;;   :config
+    ;;   (progn
+    ;;     (make-directory "~/.emacs.d/org-roam")
+    ;;     (setq org-roam-directory (file-truename "~/.emacs.d/org-roam"))
+    ;;     (org-roam-db-autosync-mode)))
+
+    ;; org notify
+    ;; (use-package org
+    ;;   :ensure org-contrib)
+    ;; (use-package org-notify
+    ;;   :ensure nil
+    ;;   :after org
+    ;;   :config
+    ;;   (org-notify-start)
+    ;;   (org-notify-add 'meeting
+    ;; 		  '(:time "1h" :actions -notify/window :period "10s" :duration 60)))
+
+  #+END_SRC
+
+* Magit
+  #+begin_src elisp
+    (use-package magit
+      :ensure t)
+  #+end_src
+* swiper /counsil /ivy
+  #+BEGIN_SRC emacs-lisp
+    (use-package ivy
+      :ensure t
+      :diminish (ivy-mode)
+      :bind (("C-x b" . ivy-switch-buffer)
+	     ("C-c C-r" . ivy-resume))
+      :config
+      (ivy-mode 1)
+      (setq ivy-use-virtual-buffers t)
+      (setq ivy-display-style 'fancy)
+      (setq ivy-wrap t)
+      (setq enable-recursive-minibuffers t)
+      (setq ivy-count-format "%d/%d "))
+
+    (use-package ivy-prescient
+      :ensure t
+      :init
+      (ivy-prescient-mode 1)
+      (prescient-persist-mode))
+
+    (use-package ivy-rich
+      :ensure t
+      :init
+      (ivy-rich-mode 1))
+
+    (use-package counsel
+      :ensure t
+      :bind (("M-y" . counsel-yank-pop)
+	     ("M-x" . counsel-M-x)
+	     ("C-x C-f" . counsel-find-file)
+	     :map ivy-minibuffer-map
+	     ("M-y" . ivy-next-line)
+	     :map minibuffer-local-map
+	     ("C-r" . 'counsel-minibuffer-history)))
+
+
+
+    (use-package swiper
+      :ensure t
+      :bind (("C-s" . swiper))
+      :config
+      (progn
+	(ivy-mode 1)
+	(setq ivy-use-virtual-buffers t)
+	(setq ivy-display-style 'fancy)
+	(define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)))
+  #+END_SRC
+  
+* avy
+#+BEGIN_SRC emacs-lisp
+  (use-package avy
+    :ensure t
+    :bind ("M-s" . avy-goto-char))
+#+END_SRC
+
+* Company
+  #+BEGIN_SRC emacs-lisp
+    (use-package company
+      :ensure t
+      :bind
+      (:map company-active-map
+	    ("<tab>" . company-complete-selection))
+      ;; (:map lsp-mode-map
+      ;; 	  ("<tab>" . company-indent-or-complete-common))
+      :config
+      (progn
+	(setq company-dabbrev-downcase 0)
+	(setq company-idle-delay 0)
+	(setq company-require-match nil)
+	(defvar company-mode/enable-yas t)
+	;;(add-hook 'after-init-hook 'global-company-mode)
+	(defun company-yasnippet-or-completion ()
+	  ;; expand yasnippet instead of completing with company
+	  (interactive)
+	  (let ((yas-fallback-behavior nil))
+	    (unless (yas-expand)
+	      (call-interactively #'company-complete-selection))))
+	(add-hook 'company-mode-hook (lambda ()
+				       (substitute-key-definition 'company-complete-selection
+								  'company-yasnippet-or-completion
+								  company-active-map))))
+      :init (global-company-mode))
+
+    ;; show snippets as completion options
+    (defun company-mode/backend-with-yas (backend)
+      (if (or (not company-mode/enable-yas) (and (listp backend) (member 'company-yasnippet backend)))
+	  backend
+	(append (if (consp backend) backend (list backend))
+		'(:with company-yasnippet))))
+
+    ;; (setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+
+    ;; (use-package company-lsp
+    ;;   :ensure t
+    ;;   :commands company-lsp
+    ;;   :config (push 'company-lsp company-backends))
+
+    (use-package company-prescient
+      :ensure t
+      :after company
+      :config
+      (company-prescient-mode 1)
+      (prescient-persist-mode))
+  #+END_SRC
+  
+* Flycheck
+  #+BEGIN_SRC emacs-lisp
+    (use-package flycheck
+      :ensure t
+      :init
+      (global-flycheck-mode t))
+  #+END_SRC
+
+* smart parenthesis
+  #+BEGIN_SRC emacs-lisp
+    (use-package smartparens
+      :ensure t
+      :config
+      (use-package smartparens-config)
+      (use-package smartparens-python)
+      (use-package smartparens-latex)
+      (show-smartparens-global-mode 1)
+      (smartparens-global-mode 1))
+
+  #+END_SRC
+* yasnippet
+  #+BEGIN_SRC emacs-lisp
+    (use-package yasnippet
+      :ensure t
+      :hook (LaTeX-mode . yas-minor-mode)
+      :config
+      (progn
+	(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+	(setq yas-indent-line 'auto)
+	(setq yas-also-auto-indent-first-line 't)
+	(yas-reload-all)
+	(add-hook 'c++-mode-hook #'yas-minor-mode)
+	(yas-global-mode 1))
+      (setq yas-triggers-in-field t))
+
+    (use-package warnings
+      :ensure t
+      :config
+      (add-to-list 'warning-suppress-types '(yasnippet backquote-change)))
+  #+END_SRC
+  
+* Undo Tree
+#+BEGIN_SRC emacs-lisp
+  (use-package undo-tree
+    :ensure t
+    :init
+    (global-undo-tree-mode))
+#+END_SRC
+
+* iedit
+  #+BEGIN_SRC emacs-lisp
+    (use-package iedit
+      :ensure t)
+
+    (defun narrow-or-widen-dwim (p)
+      "Widen if buffer is narrowed, narrow-dwim otherwise.
+    Dwim means: region, org-src-block, org-subtree, or
+    defun, whichever applies first. Narrowing to
+    org-src-block actually calls `org-edit-src-code'.
+
+    With prefix P, don't widen, just narrow even if buffer
+    is already narrowed."
+      (interactive "P")
+      (declare (interactive-only))
+      (cond ((and (buffer-narrowed-p) (not p))
+	     (widen)
+	     (recenter))
+	    ((region-active-p)
+	     (narrow-to-region (region-beginning)
+			       (region-end)))
+	    ((derived-mode-p 'org-mode)
+	     ;; `org-edit-src-code' is not a real narrowing
+	     ;; command. Remove this first conditional if
+	     ;; you don't want it.
+	     (cond ((ignore-errors (org-edit-src-code) t)
+		    (delete-other-windows))
+		   ((ignore-errors (org-narrow-to-block) t))
+		   (t (org-narrow-to-subtree))))
+	    ((derived-mode-p 'latex-mode)
+	     (LaTeX-narrow-to-environment))
+	    (t (narrow-to-defun))))
+
+    (define-key ctl-x-map "n" #'narrow-or-widen-dwim)
+    (add-hook 'LaTeX-mode-hook
+	      (lambda ()
+		(define-key LaTeX-mode-map "\C-xn"
+			    nil)))
+  #+END_SRC
+
+* Projectile
+  #+BEGIN_SRC emacs-lisp
+    (use-package projectile
+      :ensure t
+      :bind (:map projectile-mode-map
+		  ("C-M-s". projectile-ripgrep))
+      :config
+      (projectile-global-mode
+       (setq projectile-completion-system 'ivy))
+      (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+
+    (use-package counsel-projectile
+      :ensure t
+      :config
+      (counsel-projectile-mode))
+  #+END_SRC
+* Misc packages
+#+BEGIN_SRC emacs-lisp
+  (use-package beacon
+    :ensure t
+    :config
+    (beacon-mode 1))
+
+  ;; (use-package aggressive-indent
+  ;;   :ensure t
+  ;;   :config
+  ;;   (global-aggressive-indent-mode 1))
+
+  (use-package expand-region
+    :ensure t
+    :config
+    (global-set-key (kbd "C-=") 'er/expand-region))
+
+  (setq save-interprogram-paste-before-kill t)
+
+  (use-package evil-nerd-commenter
+    :ensure t
+    :bind ("M-;" . evilnc-comment-or-uncomment-lines))
+
+  (use-package ispell
+    :ensure t
+    :config
+    (setq ispell-dictionary "british"))
+#+END_SRC
+
+* Load other files 
+  Useful to outsource stuff into other files
+  #+BEGIN_SRC emacs-lisp
+    (defun load-if-exists (f)
+      "load elisp file if exists and is readable"
+      (if (file-readable-p f)
+	  (load-file f)))
+  #+END_SRC
+
+* Programming Languages
+** Language Server Protocoll (LSP)
+   #+BEGIN_SRC  emacs-lisp
+     (use-package lsp-mode
+       :ensure t
+       :config
+       (setq lsp-enable-indentation nil)
+       (setq lsp-enable-on-type-formatting nil)
+       ;; (setq lsp-lens-enable nil) ;; bugfix ?
+       (setq lsp-log-io nil)
+       (setq lsp-clients-fortls-args '("--lowercase_intrinsics")))
+
+   #+END_SRC 
+** Eglot
+   #+BEGIN_SRC emacs-lisp
+     (use-package eglot
+       :ensure t
+       :hook (python-mode . eglot-ensure)
+       :config
+       (add-to-list 'eglot-server-programs
+		    '(python-mode . ("pylsp"))))
+   #+END_SRC 
+** Python 
+   #+BEGIN_SRC emacs-lisp
+     ;; (use-package python-mode
+     ;;   :hook
+     ;;   (python-mode . flycheck-mode)
+     ;;   (python-mode . pyvenv-mode)
+     ;;   :bind (:map python-mode-map
+     ;; 	       ("C-c r" . py-shift-right)
+     ;; 	       ("C-c l" . py-shift-left)
+     ;; 	       ("C-<backspace>" . backward-kill-word)
+     ;; 	       ("C-x n" . narrow-or-widen-dwim))
+     ;;   :config
+     ;;   (setq flycheck-flake8-maximum-line-length 90)
+     ;;   (setq python-shell-interpreter "python"))
+
+
+     ;; (use-package pylint
+     ;;   :ensure t)
+
+     ;; (use-package py-autopep8
+     ;;   :ensure t
+     ;;   :hook (python-mode . py-autopep8-mode)
+     ;;   :config
+     ;;   (setq py-autopep8-options '("--max-line-length=100" "--aggressive")))
+
+     ;; (use-package lsp-python-ms
+     ;;   :ensure t
+     ;;   :hook (python-mode .(lambda ()
+     ;; 		   (require 'lsp-python-ms)
+     ;; 		   (lsp))))
+
+     ;; (use-package lsp-pyright
+     ;;   :ensure t
+     ;;   :after lsp-mode
+     ;;   :hook (python-mode . (lambda ()
+     ;; 			      (require 'lsp-pyright (lsp)))))
+
+     (use-package pyvenv
+       :ensure t)
+   #+END_SRC
+
+** Julia
+   #+BEGIN_SRC emacs-lisp
+;; (setenv "PATH" (concat (getenv "PATH") ":/usr/local/programs/julia-1.6.0/bin/"))
+;; (setq exec-path (append exec-path '("/usr/local/programs/julia-1.6.0/bin/")))
+
+;; (use-package eglot-jl
+;;   :ensure t
+;;   :hook (julia-mode . eglot-jl-init))
+
+(use-package lsp-julia
+  :ensure t
+  :config
+  (progn
+    (setq lsp-julia-default-environment "~/.julia/environments/v1.7")
+    (setq lsp-julia-package-dir nil)))
+
+(use-package julia-mode
+  :ensure t
+  :config
+  (progn
+    (add-hook 'julia-mode-hook #'lsp-mode)
+    (add-hook 'julia-mode-hook #'lsp)))
+   #+END_SRC
+   
+** C++
+   #+BEGIN_SRC emacs-lisp
+     (use-package ccls
+       :ensure t
+       :config
+       (setq ccls-executable "ccls")
+       (setq lsp-prefer-flymake nil)
+       (setq-default flycheck-disabled-checkers '(c/c++-clang c/c++-cppcheck c/c++-gcc))
+       :hook ((c-mode c++-mode objc-mode cuda-mode) .
+	      (lambda () (require 'ccls) (lsp))))
+
+     (eval-after-load 'flycheck
+       '(progn
+	  (setq mylintfile (concat
+			    (car (file-expand-wildcards "/home/jonas/.emacs.d/elpa/flycheck-[0-9]*"))
+			    "/flycheck-google-cpplint.el"))
+	  (unless (file-exists-p mylintfile)
+	    (copy-file "/home/jonas/.emacs.d/elpa/flycheck-google-cpplint.el"
+		       mylintfile))
+
+	  (require 'flycheck-google-cpplint)
+	  (flycheck-add-next-checker 'c/c++-clang
+				     '(warning . c/c++-googlelint))))
+
+   #+END_SRC
+   
+** Fortran 
+   #+BEGIN_SRC emacs-lisp
+     (use-package f90-mode
+       :hook ((f90-mode . lsp-mode)
+	      (f90-mode . lsp)))
+
+     ;; (add-hook 'f90-mode-hook #'lsp-mode)
+     ;; (add-hook 'f90-mode-hook #'lsp)
+   #+END_SRC
+* Latex
+** Auctex
+   #+BEGIN_SRC emacs-lisp
+     ;; load the bibtex keys so reftex can autocomplete them 
+     (defun get-bibtex-keys (file)
+       (with-current-buffer (find-file-noselect file)
+	 (mapcar 'car (bibtex-parse-keys))))
+
+     (defun LaTeX-add-all-bibitems-from-bibtex ()
+       (interactive)
+       (mapc 'LaTeX-add-bibitems
+	     (apply 'append
+		    (mapcar 'get-bibtex-keys (reftex-get-bibfile-list)))))
+
+
+     (use-package latex
+       :ensure auctex
+       :hook ((LaTeX-mode . prettify-symbols-mode)
+	      (LaTeX-mode . flyspell-mode)
+	      (LaTeX-mode-hook . flyspell-buffer))
+       :config
+       (progn
+	 (setq TeX-auto-save t)
+	 (setq TeX-parse-self t)
+	 (setq TeX-save-query nil)
+	 (setq TeX-PDF-mode t))
+       (progn
+	 (add-to-list 'tex--prettify-symbols-alist '("\\pm" . ?±)))
+       (progn
+	 (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+	 (setq reftex-plug-into-AUCTeX t)))
+
+
+
+     (use-package cdlatex
+       :ensure t
+       :hook (LaTeX-mode . turn-on-cdlatex)
+       :bind (:map cdlatex-mode-map ("<tab>" . cdlatex-tab))
+       :config
+       (setq cdlatex-math-symbol-alist '((?F "\\Phi" nil t t nil)))
+       (setq cdlatex-math-modify-alist '((?f "\\mathfrak" nil t t nil)
+					 (?b "\\mathbb" nil t t nil)))
+       (setq cdlatex-math-symbol-prefix ?´))
+
+
+     (use-package cdlatex
+       :hook ((cdlatex-tab . yas-expand)
+	      (cdlatex-tab . cdlatex-in-yas-field))
+       :config
+       (use-package yasnippet
+	 :bind (:map yas-keymap
+		     ("<tab>" . yas-next-field-or-cdlatex)
+		     ("TAB" . yas-next-field-or-cdlatex))
+	 :config
+	 (defun cdlatex-in-yas-field ()
+	   ;; Check if we're at the end of the Yas field
+	   (when-let* ((_ (overlayp yas--active-field-overlay))
+		       (end (overlay-end yas--active-field-overlay)))
+	     (if (>= (point) end)
+		 ;; Call yas-next-field if cdlatex can't expand here
+		 (let ((s (thing-at-point 'sexp)))
+		   (unless (and s (assoc (substring-no-properties s)
+					 cdlatex-command-alist-comb))
+		     (yas-next-field-or-maybe-expand)
+		     t))
+	       ;; otherwise expand and jump to the correct location
+	       (let (cdlatex-tab-hook minp)
+		 (setq minp
+		       (min (save-excursion (cdlatex-tab)
+					    (point))
+			    (overlay-end yas--active-field-overlay)))
+		 (goto-char minp) t))))
+
+	 (defun yas-next-field-or-cdlatex ()
+	   (interactive)
+	   "Jump to the next Yas field correctly with cdlatex active."
+	   (if (bound-and-true-p cdlatex-mode)
+	       (cdlatex-tab)
+	     (yas-next-field-or-maybe-expand)))))
+
+     (use-package org-table
+       :after cdlatex
+       :bind (:map orgtbl-mode-map
+		   ("<tab>" . lazytab-org-table-next-field-maybe)
+		   ("TAB" . lazytab-org-table-next-field-maybe))
+       :init
+       (add-hook 'cdlatex-tab-hook 'lazytab-cdlatex-or-orgtbl-next-field 90)
+       ;; Tabular environments using cdlatex
+       (add-to-list 'cdlatex-command-alist '("smat" "Insert smallmatrix env"
+					     "\\left( \\begin{smallmatrix} ? \\end{smallmatrix} \\right)"
+					     lazytab-position-cursor-and-edit
+					     nil nil t))
+       (add-to-list 'cdlatex-command-alist '("bmat" "Insert bmatrix env"
+					     "\\begin{bmatrix} ? \\end{bmatrix}"
+					     lazytab-position-cursor-and-edit
+					     nil nil t))
+       (add-to-list 'cdlatex-command-alist '("pmat" "Insert pmatrix env"
+					     "\\begin{pmatrix} ? \\end{pmatrix}"
+					     lazytab-position-cursor-and-edit
+					     nil nil t))
+       (add-to-list 'cdlatex-command-alist '("tbl" "Insert table"
+					     "\\begin{table}\n\\centering ? \\caption{}\n\\end{table}\n"
+					     lazytab-position-cursor-and-edit
+					     nil t nil))
+       :config
+       ;; Tab handling in org tables
+       (defun lazytab-position-cursor-and-edit ()
+	 ;; (if (search-backward "\?" (- (point) 100) t)
+	 ;;     (delete-char 1))
+	 (cdlatex-position-cursor)
+	 (lazytab-orgtbl-edit))
+
+       (defun lazytab-orgtbl-edit ()
+	 (advice-add 'orgtbl-ctrl-c-ctrl-c :after #'lazytab-orgtbl-replace)
+	 (orgtbl-mode 1)
+	 (open-line 1)
+	 (insert "\n|"))
+
+       (defun lazytab-orgtbl-replace (_)
+	 (interactive "P")
+	 (unless (org-at-table-p) (user-error "Not at a table"))
+	 (let* ((table (org-table-to-lisp))
+		params
+		(replacement-table
+		 (if (texmathp)
+		     (lazytab-orgtbl-to-amsmath table params)
+		   (orgtbl-to-latex table params))))
+	   (kill-region (org-table-begin) (org-table-end))
+	   (open-line 1)
+	   (push-mark)
+	   (insert replacement-table)
+	   (align-regexp (region-beginning) (region-end) "\\([:space:]*\\)& ")
+	   (orgtbl-mode -1)
+	   (advice-remove 'orgtbl-ctrl-c-ctrl-c #'lazytab-orgtbl-replace)))
+
+       (defun lazytab-orgtbl-to-amsmath (table params)
+	 (orgtbl-to-generic
+	  table
+	  (org-combine-plists
+	   '(:splice t
+		     :lstart ""
+		     :lend " \\\\"
+		     :sep " & "
+		     :hline nil
+		     :llend "")
+	   params)))
+
+       (defun lazytab-cdlatex-or-orgtbl-next-field ()
+	 (when (and (bound-and-true-p orgtbl-mode)
+		    (org-table-p)
+		    (looking-at "[[:space:]]*\\(?:|\\|$\\)")
+		    (let ((s (thing-at-point 'sexp)))
+		      (not (and s (assoc s cdlatex-command-alist-comb)))))
+	   (call-interactively #'org-table-next-field)
+	   t))
+
+       (defun lazytab-org-table-next-field-maybe ()
+	 (interactive)
+	 (if (bound-and-true-p cdlatex-mode)
+	     (cdlatex-tab)
+	   (org-table-next-field))))
+
+     ;; Make okular work
+     (setq-default TeX-master nil)
+     (setq TeX-source-correlate-mode t
+	   TeX-source-correlate-start-server t)
+     (eval-after-load "tex"
+       '(setcar (cdr (assoc 'output-pdf TeX-view-program-selection)) "Okular"))
+   #+END_SRC
+** Org-Mode Latex
+   #+begin_src emacs-lisp
+     (use-package org
+       :ensure t
+       :config
+	 (setq org-src-preserve-indentation t
+	       org-src-fontify-natively t
+	       org-export-latex-listings t
+	       org-latex-listings 'listings
+	       org-latex-prefer-user-labels t
+	       org-confirm-babel-evaluate nil
+	       org-babel-python-command "/usr/bin/env python3")
+	 (add-to-list 'org-latex-packages-alist '("" "listings"))
+	 (org-babel-do-load-languages 'org-babel-load-languages '((python . t)))
+       :hook ((org-mode . org-toggle-pretty-entities)
+	      (org-mode . org-cdlatex-mode)))
+
+
+   #+end_src
+* PDF Tools
+  #+BEGIN_SRC emacs-lisp
+    (use-package pdf-tools
+      :ensure t
+      :config
+      (pdf-tools-install))
+
+    (use-package org-pdftools
+      :hook (org-load . org-pdftools-setup-link))
+
+    (use-package org-noter-pdftools
+      :after org-noter
+      :config
+      (with-eval-after-load 'pdf-annot
+	(add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
+  #+END_SRC
+* Tramp
+  #+BEGIN_SRC emacs-lisp
+    (use-package counsel-tramp
+      :ensure t
+      :config
+      (setq tramp-default-method "ssh")
+      (define-key global-map (kbd "C-c s") 'counsel-tramp)
+      (add-hook 'counsel-tramp-pre-command-hook '(lambda () (global-aggressive-indent-mode 0)
+						   (projectile-mode 0)
+						   ;; (editorconfig-mode 0)
+						   ))
+      (add-hook 'counsel-tramp-quit-hook '(lambda () (global-aggressive-indent-mode 1)
+					    (projectile-mode 1)
+					    ;; (editorconfig-mode 1)
+					    )))
+  #+END_SRC
+* the rest
+#+BEGIN_SRC emacs-lisp
+  ;; multiple-cursors
+  ;; --------------------------------------
+  (require 'multiple-cursors)
+  (global-set-key (kbd "C->") 'mc/mark-next-like-this)
+  (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)  
+#+END_SRC
+
+
+
+
+
+
