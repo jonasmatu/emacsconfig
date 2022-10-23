@@ -40,24 +40,23 @@
 * Backups
   Make backups in central folder
   #+BEGIN_SRC emacs-lisp
-    (let ((backup-dir "~/.emacs.d/backups")
-	  (auto-saves-dir "~/.emacs.d/backups"))
-      (when (not (file-directory-p backup-dir))
-	(make-directory backup-dir t))
-      (setq backup-directory-alist `(("." . ,backup-dir))
-	    auto-save-file-name-transforms `((".*" ,auto-saves-dir t))
-	    auto-save-list-file-prefix (concat auto-saves-dir ".saves-")
-	    tramp-backup-directory-alist `((".*" . ,backup-dir))
-	    tramp-auto-save-directory auto-saves-dir))
+(let ((backup-dir "~/.emacs.d/backups")
+      (auto-saves-dir "~/.emacs.d/backups"))
+  (when (not (file-directory-p backup-dir))
+    (make-directory backup-dir t))
+  (setq backup-directory-alist `(("." . ,backup-dir))
+	auto-save-file-name-transforms `((".*" ,auto-saves-dir t))
+	auto-save-list-file-prefix (concat auto-saves-dir ".saves-")
+	tramp-backup-directory-alist `((".*" . ,backup-dir))
+	tramp-auto-save-directory auto-saves-dir))
 
-    (setq make-backup-files t
-	  backup-by-copying t
-	  delete-old-versions t
-	  version-control t
-	  kept-new-versions 5
-	  kept-old-versions 2
-	  vc-make-backup-files t)
-
+(setq make-backup-files t
+      backup-by-copying t
+      delete-old-versions t
+      version-control t
+      kept-new-versions 5
+      kept-old-versions 2
+      vc-make-backup-files t)
   #+END_SRC
 * Dashboard
   #+BEGIN_SRC emacs-lisp
@@ -77,6 +76,13 @@
 			      (agenda . 5)
 			      (registers . 5)
 			      (bookmarks . 5))))
+  #+END_SRC
+* Keychain enviroment
+  #+BEGIN_SRC emacs-lisp
+(use-package keychain-environment
+  :ensure t
+  :init
+  (keychain-refresh-environment))
   #+END_SRC
 * Crux
   #+BEGIN_SRC emacs-lisp
@@ -275,15 +281,15 @@
 
 
 
-    (use-package swiper
-      :ensure t
-      :bind (("C-s" . swiper))
-      :config
-      (progn
-	(ivy-mode 1)
-	(setq ivy-use-virtual-buffers t)
-	(setq ivy-display-style 'fancy)
-	(define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)))
+    ;; (use-package swiper
+    ;;   :ensure t
+    ;;   :bind (("C-s" . swiper))
+    ;;   :config
+    ;;   (progn
+    ;; 	(ivy-mode 1)
+    ;; 	(setq ivy-use-virtual-buffers t)
+    ;; 	(setq ivy-display-style 'fancy)
+    ;; 	(define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)))
   #+END_SRC
   
 * avy
@@ -342,7 +348,7 @@
       (company-prescient-mode 1)
       (prescient-persist-mode))
   #+END_SRC
-  
+
 * Flycheck
   #+BEGIN_SRC emacs-lisp
     (use-package flycheck
@@ -446,7 +452,12 @@
     (use-package counsel-projectile
       :ensure t
       :config
-      (counsel-projectile-mode))
+      (counsel-projectile-mode)
+      (setq counsel-projectile-org-capture-templates
+	    '(("t" "[${name}] Task" entry (file+headline "${root}/README.org" "Tasks")
+	       "* TODO %?\n  %u\n  %a")
+	      ("t" "[${name}] Note" entry (file+headline "${root}/notes.org" "NotiNote")
+	 "* TODO %?\n  %u\n  %a"))))
   #+END_SRC
 * Misc packages
 #+BEGIN_SRC emacs-lisp
@@ -491,6 +502,7 @@
    #+BEGIN_SRC  emacs-lisp
      (use-package lsp-mode
        :ensure t
+       :hook (python-mode . lsp)
        :config
        (setq lsp-enable-indentation nil)
        (setq lsp-enable-on-type-formatting nil)
@@ -501,12 +513,12 @@
    #+END_SRC 
 ** Eglot
    #+BEGIN_SRC emacs-lisp
-     (use-package eglot
-       :ensure t
-       :hook (python-mode . eglot-ensure)
-       :config
-       (add-to-list 'eglot-server-programs
-		    '(python-mode . ("pylsp"))))
+     ;; (use-package eglot
+     ;;   :ensure t
+     ;;   :hook (python-mode . eglot-ensure)
+     ;;   :config
+     ;;   (add-to-list 'eglot-server-programs
+     ;; 		    '(python-mode . ("pylsp"))))
    #+END_SRC 
 ** Python 
    #+BEGIN_SRC emacs-lisp
@@ -608,6 +620,20 @@
      ;; (add-hook 'f90-mode-hook #'lsp-mode)
      ;; (add-hook 'f90-mode-hook #'lsp)
    #+END_SRC
+
+** Mathematica
+   #+BEGIN_SRC emacs-lisp
+     ;; (org-babel-do-load-languages 'org-babel-load-languages
+     ;; 			     (append org-babel-load-languages
+     ;;                                      '((mathematica . t))
+     ;;                                      ))
+     ;; ;; Sanitize output and deal with paths
+     ;; (setq org-babel-mathematica-command "~/.emacs.d/mash")
+     ;; ;; Font-locking
+     ;; (add-to-list 'org-src-lang-modes '("mathematica" . wolfram))
+     ;; ;; For wolfram-mode
+     ;; (setq mathematica-command-line "~/.emacs.d/mash")
+   #+END_SRC
 * Latex
 ** Auctex
    #+BEGIN_SRC emacs-lisp
@@ -635,7 +661,8 @@
 	 (setq TeX-save-query nil)
 	 (setq TeX-PDF-mode t))
        (progn
-	 (add-to-list 'tex--prettify-symbols-alist '("\\pm" . ?±)))
+	 (add-to-list 'tex--prettify-symbols-alist '("\\pm" . ?±))
+	 (add-to_list 'tex--prettify-symbols-alist '("\\sumint" . ?⨋)))
        (progn
 	 (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
 	 (setq reftex-plug-into-AUCTeX t)))
@@ -647,7 +674,8 @@
        :hook (LaTeX-mode . turn-on-cdlatex)
        :bind (:map cdlatex-mode-map ("<tab>" . cdlatex-tab))
        :config
-       (setq cdlatex-math-symbol-alist '((?F "\\Phi" nil t t nil)))
+       (setq cdlatex-math-symbol-alist '((?F "\\Phi" nil t t nil)
+					 (?c "\\chi" nil t t nil)))
        (setq cdlatex-math-modify-alist '((?f "\\mathfrak" nil t t nil)
 					 (?b "\\mathbb" nil t t nil)))
        (setq cdlatex-math-symbol-prefix ?´))
